@@ -6,9 +6,8 @@
   "scripts": {},
   "author": "",
   "license": "ISC",
-  "dependencies": {
-  },
   "devDependencies": {
-    "webpack": "^5.90.1"
+    "webpack": "^5.90.1",
+    "webpack-cli": "^5.1.4"
   }
 }
