@@ -2,7 +2,7 @@ const profileEditButton = document.querySelector('.profile__edit-button');
 const profileTitle = document.querySelector('.profile__title');
 const profileJob = document.querySelector('.profile__description');
 const editProfilePopup = document.querySelector('.popup_type_edit');
-const closePopupButton = document.querySelector('.popup__close');
+const closePopupButton = editProfilePopup.querySelector('.popup__close');
 const editPopupForm = document.forms['edit-profile'];
 const nameInput = editPopupForm.elements.name;
 const jobInput = editPopupForm.elements.description;
@@ -14,8 +14,8 @@ setupEventListeners();
  * @description Настраивает слушателей событий.
  */
 function setupEventListeners() {
-  profileEditButton.addEventListener('click', handleEditProfile);
   editProfilePopup.addEventListener('click', handlePopupClick);
+  profileEditButton.addEventListener('click', handleEditProfile);
   closePopupButton.addEventListener('click', handleCloseButtonClick);
   editPopupForm.addEventListener('submit', handleSaveButtonClick);
 }
