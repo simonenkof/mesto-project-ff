@@ -1,4 +1,5 @@
 import './pages/index.css';
+import './scripts/edit-popup';
 import { initialCards } from './scripts/cards';
 
 const cardTemplate = document.querySelector('#card-template').content;
