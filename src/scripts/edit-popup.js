@@ -61,7 +61,7 @@ function handleEscapeButtonClick(event) {
 }
 
 /**
- * @function handleEscapeButtonClick
+ * @function handleSaveButtonClick
  * @description Обработчик события "submit" кнопки сохранения изменений.
  * Отменяет стандратное поведение события.
  * @param {Event} event - Событие.

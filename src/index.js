@@ -1,6 +1,7 @@
 import './pages/index.css';
 import './scripts/edit-popup';
 import './scripts/new-card-popup';
+import { onPictureClick } from './scripts/big-picture-popup';
 import { initialCards } from './scripts/cards';
 
 const cardTemplate = document.querySelector('#card-template').content;
@@ -15,7 +16,7 @@ document.addEventListener('cardAdded', (event) => handleCardAdded(event.detail.c
  * @param {Function} onDeleteCard - Колбек для удаления карточки.
  * @return {Object} Созданная карточка
  */
-function createCard(cardData, onDeleteCard, onLikeCard) {
+function createCard(cardData, onDeleteCard, onLikeCard, onPicture) {
   const card = cardTemplate.querySelector('.card').cloneNode(true);
   const cardText = card.querySelector('.card__title');
   const cardImage = card.querySelector('.card__image');
@@ -26,6 +27,7 @@ function createCard(cardData, onDeleteCard, onLikeCard) {
   cardImage.src = cardData.link;
   cardImage.alt = cardData.description;
 
+  cardImage.addEventListener('click', () => onPicture(cardData));
   cardDeleteButton.addEventListener('click', (event) => onDeleteCard(event.target.closest('.card')));
   cardLikeButton.addEventListener('click', (event) => onLikeCard(event.target.closest('.card__like-button')));
 
@@ -56,9 +58,9 @@ function likeCard(card) {
  * @param {Object} cardData - Информация о карточке.
  */
 function handleCardAdded(cardData) {
-  places.prepend(createCard(cardData, removeCard, likeCard));
+  places.prepend(createCard(cardData, removeCard, likeCard, onPictureClick));
 }
 
 for (const cardData of initialCards) {
-  places.append(createCard(cardData, removeCard, likeCard));
+  places.append(createCard(cardData, removeCard, likeCard, onPictureClick));
 }

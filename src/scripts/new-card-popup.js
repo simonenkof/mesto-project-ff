@@ -52,6 +52,15 @@ function handleSaveButtonClick(event) {
 }
 
 /**
+ * @function handleEscapeButtonClick
+ * @description Обработчик события "keydown" клавиатуры. Закрывает модальное окно,
+ * если была нажата клавиша Escape.
+ */
+function handleEscapeButtonClick(event) {
+  if (event.key.toLowerCase() === 'escape') changePopupDisplayState('none');
+}
+
+/**
  * @function addNewCard
  * @description Создает новую карточку на основе введенных данных. Генерирует "cardAdded".
  */
@@ -72,5 +81,11 @@ function addNewCard() {
  * @param {string} state - Состояние модального окна.
  */
 function changePopupDisplayState(state) {
+  if (state === 'none') {
+    document.removeEventListener('keydown', handleEscapeButtonClick);
+  } else {
+    document.addEventListener('keydown', handleEscapeButtonClick);
+  }
+
   newCardPopup.style.display = state;
 }
