@@ -1,11 +1,12 @@
 import './pages/index.css';
 import './scripts/edit-popup';
 import './scripts/new-card-popup';
-import { onPictureClick } from './scripts/big-picture-popup';
+import BigPicturePopup from './scripts/big-picture-popup';
 import { initialCards } from './scripts/cards';
 
 const cardTemplate = document.querySelector('#card-template').content;
 const places = document.querySelector('.places__list');
+const bigPicturePopup = document.querySelector('.popup_type_image');
 
 document.addEventListener('cardAdded', (event) => handleCardAdded(event.detail.cardData));
 
@@ -27,7 +28,7 @@ function createCard(cardData, onDeleteCard, onLikeCard, onPicture) {
   cardImage.src = cardData.link;
   cardImage.alt = cardData.description;
 
-  cardImage.addEventListener('click', () => onPicture(cardData));
+  cardImage.addEventListener('click', () => onPicture.call(bigPicturePopupInstance, cardData));
   cardDeleteButton.addEventListener('click', (event) => onDeleteCard(event.target.closest('.card')));
   cardLikeButton.addEventListener('click', (event) => onLikeCard(event.target.closest('.card__like-button')));
 
@@ -58,9 +59,11 @@ function likeCard(card) {
  * @param {Object} cardData - Информация о карточке.
  */
 function handleCardAdded(cardData) {
-  places.prepend(createCard(cardData, removeCard, likeCard, onPictureClick));
+  places.prepend(createCard(cardData, removeCard, likeCard, bigPicturePopupInstance.onPictureClick));
 }
 
+const bigPicturePopupInstance = new BigPicturePopup(bigPicturePopup);
+
 for (const cardData of initialCards) {
-  places.append(createCard(cardData, removeCard, likeCard, onPictureClick));
+  places.append(createCard(cardData, removeCard, likeCard, bigPicturePopupInstance.onPictureClick));
 }
