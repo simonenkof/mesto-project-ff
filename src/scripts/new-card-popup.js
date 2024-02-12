@@ -1,6 +1,3 @@
-import { initialCards } from './cards';
-
-const places = document.querySelector('.places__list');
 const newCardPopup = document.querySelector('.popup_type_new-card');
 const newCardButton = document.querySelector('.profile__add-button');
 const closePopupButton = newCardPopup.querySelector('.popup__close');
