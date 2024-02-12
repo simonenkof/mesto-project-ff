@@ -22,7 +22,7 @@ export function onPictureClick(cardData) {
   bigPictureImage.src = cardData.link;
   bigPictureCapture.textContent = cardData.name;
 
-  changePopupDisplayState('flex');
+  openPopup();
 }
 
 /**
@@ -31,7 +31,7 @@ export function onPictureClick(cardData) {
  * @param {Object} eventTarget - Инициатор события.
  */
 function handlePopupClick(event) {
-  if (event.target.classList.contains('popup_type_image')) changePopupDisplayState('none');
+  if (event.target.classList.contains('popup_type_image')) closePopup();
 }
 
 /**
@@ -40,7 +40,7 @@ function handlePopupClick(event) {
  * если была нажата клавиша Escape.
  */
 function handleEscapeButtonClick(event) {
-  if (event.key.toLowerCase() === 'escape') changePopupDisplayState('none');
+  if (event.key.toLowerCase() === 'escape') closePopup();
 }
 
 /**
@@ -48,21 +48,25 @@ function handleEscapeButtonClick(event) {
  * @description Обработчик события "click" кнопки закрытия модального окна.
  */
 function handleCloseButtonClick() {
-  changePopupDisplayState('none');
+  closePopup();
 }
 
 /**
- * @function changePopupDisplayState
- * @description Изменяет отображение модального окна редактирования в зависимости
- * от переданного состояния.
- * @param {string} state - Состояние модального окна.
+ * @function openPopup
+ * @description Открывает модальное окно.
  */
-function changePopupDisplayState(state) {
-  if (state === 'none') {
-    document.removeEventListener('keydown', handleEscapeButtonClick);
-  } else {
-    document.addEventListener('keydown', handleEscapeButtonClick);
-  }
+function openPopup() {
+  document.addEventListener('keydown', handleEscapeButtonClick);
+  bigPicturePopup.classList.remove('popup_is-animated');
+  bigPicturePopup.classList.add('popup_is-opened');
+}
 
-  bigPicturePopup.style.display = state;
+/**
+ * @function closePopup
+ * @description Закрывает модальное окно.
+ */
+function closePopup() {
+  document.removeEventListener('keydown', handleEscapeButtonClick);
+  bigPicturePopup.classList.remove('popup_is-opened');
+  bigPicturePopup.classList.add('popup_is-animated');
 }
