@@ -30,7 +30,7 @@ export default class Popup {
    * если была нажата клавиша Escape.
    */
   handleEscapeButtonClick(event) {
-    if (event.key.toLowerCase() === 'escape') this.closePopup();
+    if (event.key === 'Escape') this.closePopup();
   }
 
   /**
