@@ -6,6 +6,14 @@ export default class NewCardPopup extends Popup {
     this.cardNameInput = this.cardForm.elements['place-name'];
     this.cardLinkInput = this.cardForm.elements.link;
 
+    this.setupEvents();
+  }
+
+  /**
+   * @function setupEvents
+   * @description Настраивает слушателей событий.
+   */
+  setupEvents() {
     this.cardForm.addEventListener('submit', (event) => this.handleSaveButtonClick(event));
   }
 

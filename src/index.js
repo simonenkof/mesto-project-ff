@@ -1,17 +1,21 @@
 import './pages/index.css';
-import './scripts/edit-popup';
-import './scripts/new-card-popup';
 import BigPicturePopup from './scripts/big-picture-popup';
 import NewCardPopup from './scripts/new-card-popup';
+import EditPopup from './scripts/edit-popup';
 import { initialCards } from './scripts/cards';
 
 const cardTemplate = document.querySelector('#card-template').content;
 const places = document.querySelector('.places__list');
 const bigPicturePopup = document.querySelector('.popup_type_image');
-const newCardPopup = document.querySelector('.popup_type_new-card ');
+const newCardPopup = document.querySelector('.popup_type_new-card');
 const newCardButton = document.querySelector('.profile__add-button');
+const editPopup = document.querySelector('.popup_type_edit');
+const profileEditButton = document.querySelector('.profile__edit-button');
+const profileTitle = document.querySelector('.profile__title');
+const profileJob = document.querySelector('.profile__description');
 
 document.addEventListener('cardAdded', (event) => handleCardAdded(event.detail.cardData));
+document.addEventListener('profileEdited', (event) => handleProfileEdited(event.detail));
 
 /**
  * @function createCard
@@ -65,13 +69,34 @@ function handleCardAdded(cardData) {
   places.prepend(createCard(cardData, removeCard, likeCard, bigPicturePopupInstance.onPictureClick));
 }
 
+/**
+ * @function handleCardAdded
+ * @description Обработчик события "profileEdited". Изменяет данные профиля.
+ * @param {Object} profileData - Информация профиле.
+ */
+function handleProfileEdited(profileData) {
+  profileTitle.textContent = profileData.name;
+  profileJob.textContent = profileData.job;
+}
+
+const profileData = {
+  name: profileTitle.textContent,
+  job: profileJob.textContent,
+};
+
 const bigPicturePopupInstance = new BigPicturePopup(bigPicturePopup);
 const newCardPopupInstance = new NewCardPopup(newCardPopup);
+const editPopupInstance = new EditPopup(editPopup, profileData);
 
 newCardButton.addEventListener('click', handleNewCardButtonClick);
+profileEditButton.addEventListener('click', handleEditButtonClick);
 
 function handleNewCardButtonClick() {
   newCardPopupInstance.openPopup();
+}
+
+function handleEditButtonClick() {
+  editPopupInstance.openPopup();
 }
 
 for (const cardData of initialCards) {
