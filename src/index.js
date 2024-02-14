@@ -14,8 +14,25 @@ const profileEditButton = document.querySelector('.profile__edit-button');
 const profileTitle = document.querySelector('.profile__title');
 const profileJob = document.querySelector('.profile__description');
 
-document.addEventListener('cardAdded', (event) => handleCardAdded(event.detail.cardData));
-document.addEventListener('profileEdited', (event) => handleProfileEdited(event.detail));
+const profileData = {
+  name: profileTitle.textContent,
+  job: profileJob.textContent,
+};
+
+const bigPicturePopupInstance = new BigPicturePopup(bigPicturePopup);
+const newCardPopupInstance = new NewCardPopup(newCardPopup);
+const editPopupInstance = new EditPopup(editPopup, profileData);
+
+/**
+ * @function setupEventListeners
+ * @description Настраивает слушателей событий.
+ */
+function setupEventListeners() {
+  document.addEventListener('cardAdded', (event) => handleCardAdded(event.detail.cardData));
+  document.addEventListener('profileEdited', (event) => handleProfileEdited(event.detail));
+  newCardButton.addEventListener('click', handleNewCardButtonClick);
+  profileEditButton.addEventListener('click', handleEditButtonClick);
+}
 
 /**
  * @function createCard
@@ -70,7 +87,7 @@ function handleCardAdded(cardData) {
 }
 
 /**
- * @function handleCardAdded
+ * @function handleProfileEdited
  * @description Обработчик события "profileEdited". Изменяет данные профиля.
  * @param {Object} profileData - Информация профиле.
  */
@@ -79,25 +96,26 @@ function handleProfileEdited(profileData) {
   profileJob.textContent = profileData.job;
 }
 
-const profileData = {
-  name: profileTitle.textContent,
-  job: profileJob.textContent,
-};
-
-const bigPicturePopupInstance = new BigPicturePopup(bigPicturePopup);
-const newCardPopupInstance = new NewCardPopup(newCardPopup);
-const editPopupInstance = new EditPopup(editPopup, profileData);
-
-newCardButton.addEventListener('click', handleNewCardButtonClick);
-profileEditButton.addEventListener('click', handleEditButtonClick);
-
+/**
+ * @function handleNewCardButtonClick
+ * @description Обработчик события "click" кнопки добавления карточки. Открывает модальное окно
+ * добавления карточки.
+ */
 function handleNewCardButtonClick() {
+  newCardPopupInstance.clearInputs();
   newCardPopupInstance.openPopup();
 }
 
+/**
+ * @function handleEditButtonClick
+ * @description Обработчик события "click" кнопки редактирования профиля. Открывает модальное окно
+ * редактирования профиля.
+ */
 function handleEditButtonClick() {
   editPopupInstance.openPopup();
 }
+
+setupEventListeners();
 
 for (const cardData of initialCards) {
   places.append(createCard(cardData, removeCard, likeCard, bigPicturePopupInstance.onPictureClick));

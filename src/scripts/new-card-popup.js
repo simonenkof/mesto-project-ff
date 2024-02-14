@@ -18,6 +18,15 @@ export default class NewCardPopup extends Popup {
   }
 
   /**
+   * @function clearInputs
+   * @description Очищает поля ввода.
+   */
+  clearInputs() {
+    this.cardNameInput.value = '';
+    this.cardLinkInput.value = '';
+  }
+
+  /**
    * @function handleEscapeButtonClick
    * @description Обработчик события "submit" кнопки сохранения изменений.
    * Отменяет стандратное поведение события.
