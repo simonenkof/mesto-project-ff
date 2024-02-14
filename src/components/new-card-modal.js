@@ -44,7 +44,6 @@ export default class NewCardPopup extends Popup {
    * @description Создает новую карточку на основе введенных данных. Генерирует "cardAdded".
    */
   addNewCard() {
-    console.log('call');
     const card = {
       name: this.cardNameInput.value,
       link: this.cardLinkInput.value,
