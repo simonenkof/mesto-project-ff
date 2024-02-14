@@ -1,10 +1,10 @@
 import './pages/index.css';
-import BigPicturePopup from './scripts/big-picture-popup';
-import NewCardPopup from './scripts/new-card-popup';
-import EditPopup from './scripts/edit-popup';
+import BigPicturePopup from './components/big-picture-modal';
+import NewCardPopup from './components/new-card-modal';
+import EditPopup from './components/edit-modal';
 import { initialCards } from './scripts/cards';
+import { createCard, removeCard, likeCard } from './components/card';
 
-const cardTemplate = document.querySelector('#card-template').content;
 const places = document.querySelector('.places__list');
 const bigPicturePopup = document.querySelector('.popup_type_image');
 const newCardPopup = document.querySelector('.popup_type_new-card');
@@ -35,55 +35,14 @@ function setupEventListeners() {
 }
 
 /**
- * @function createCard
- * @description Создает новую карточку на основе переданных параметров.
- * @param {Object} cardData - Информация о карточке.
- * @param {Function} onDeleteCard - Колбек для удаления карточки.
- * @return {Object} Созданная карточка
- */
-function createCard(cardData, onDeleteCard, onLikeCard, onPicture) {
-  const card = cardTemplate.querySelector('.card').cloneNode(true);
-  const cardText = card.querySelector('.card__title');
-  const cardImage = card.querySelector('.card__image');
-  const cardDeleteButton = card.querySelector('.card__delete-button');
-  const cardLikeButton = card.querySelector('.card__like-button');
-
-  cardText.textContent = cardData.name;
-  cardImage.src = cardData.link;
-  cardImage.alt = cardData.description;
-
-  cardImage.addEventListener('click', () => onPicture.call(bigPicturePopupInstance, cardData));
-  cardDeleteButton.addEventListener('click', (event) => onDeleteCard(event.target.closest('.card')));
-  cardLikeButton.addEventListener('click', (event) => onLikeCard(event.target.closest('.card__like-button')));
-
-  return card;
-}
-
-/**
- * @function removeCard
- * @description Удаляет карточку, переданную в параметре.
- * @param {Object} cardElement - Карточка.
- */
-function removeCard(cardElement) {
-  cardElement.remove();
-}
-
-/**
- * @function likeCard
- * @description Переключает класс "card__like-button_is-active" на переданной карточке.
- * @param {Object} card - Карточка.
- */
-function likeCard(card) {
-  card.classList.toggle('card__like-button_is-active');
-}
-
-/**
  * @function handleCardAdded
  * @description Обработчик события "cardAdded". Добавляет новую карточку в начало списка.
  * @param {Object} cardData - Информация о карточке.
  */
 function handleCardAdded(cardData) {
-  places.prepend(createCard(cardData, removeCard, likeCard, bigPicturePopupInstance.onPictureClick));
+  places.prepend(
+    createCard(cardData, removeCard, likeCard, bigPicturePopupInstance, bigPicturePopupInstance.onPictureClick)
+  );
 }
 
 /**
@@ -118,5 +77,7 @@ function handleEditButtonClick() {
 setupEventListeners();
 
 for (const cardData of initialCards) {
-  places.append(createCard(cardData, removeCard, likeCard, bigPicturePopupInstance.onPictureClick));
+  places.append(
+    createCard(cardData, removeCard, likeCard, bigPicturePopupInstance, bigPicturePopupInstance.onPictureClick)
+  );
 }

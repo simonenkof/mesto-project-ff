@@ -1,4 +1,4 @@
-import Popup from './popup';
+import Popup from './modal';
 export default class EditPopup extends Popup {
   constructor(popup, profileData) {
     super(popup);

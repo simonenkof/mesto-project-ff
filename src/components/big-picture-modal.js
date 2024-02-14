@@ -1,4 +1,5 @@
-import Popup from './popup';
+import Popup from './modal';
+
 export default class BigPicturePopup extends Popup {
   constructor(popup) {
     super(popup);
