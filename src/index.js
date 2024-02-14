@@ -2,11 +2,14 @@ import './pages/index.css';
 import './scripts/edit-popup';
 import './scripts/new-card-popup';
 import BigPicturePopup from './scripts/big-picture-popup';
+import NewCardPopup from './scripts/new-card-popup';
 import { initialCards } from './scripts/cards';
 
 const cardTemplate = document.querySelector('#card-template').content;
 const places = document.querySelector('.places__list');
 const bigPicturePopup = document.querySelector('.popup_type_image');
+const newCardPopup = document.querySelector('.popup_type_new-card ');
+const newCardButton = document.querySelector('.profile__add-button');
 
 document.addEventListener('cardAdded', (event) => handleCardAdded(event.detail.cardData));
 
@@ -63,6 +66,13 @@ function handleCardAdded(cardData) {
 }
 
 const bigPicturePopupInstance = new BigPicturePopup(bigPicturePopup);
+const newCardPopupInstance = new NewCardPopup(newCardPopup);
+
+newCardButton.addEventListener('click', handleNewCardButtonClick);
+
+function handleNewCardButtonClick() {
+  newCardPopupInstance.openPopup();
+}
 
 for (const cardData of initialCards) {
   places.append(createCard(cardData, removeCard, likeCard, bigPicturePopupInstance.onPictureClick));

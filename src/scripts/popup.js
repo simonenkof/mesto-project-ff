@@ -21,7 +21,7 @@ export default class Popup {
    * @param {Object} eventTarget - Инициатор события.
    */
   handlePopupClick(event) {
-    if (event.target.classList.contains('popup_type_image')) this.closePopup();
+    if (event.target.classList.contains('popup')) this.closePopup();
   }
 
   /**
