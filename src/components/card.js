@@ -1,5 +1,3 @@
-const cardTemplate = document.querySelector('#card-template').content;
-
 /**
  * @function createCard
  * @description Создает новую карточку на основе переданных параметров.
@@ -8,7 +6,7 @@ const cardTemplate = document.querySelector('#card-template').content;
  * @return {Object} Созданная карточка
  */
 function createCard(cardData, onDeleteCard, onLikeCard, bigPicturePopupInstance, onPicture) {
-  const card = cardTemplate.querySelector('.card').cloneNode(true);
+  const card = getCardTemplate();
   const cardText = card.querySelector('.card__title');
   const cardImage = card.querySelector('.card__image');
   const cardDeleteButton = card.querySelector('.card__delete-button');
@@ -23,6 +21,16 @@ function createCard(cardData, onDeleteCard, onLikeCard, bigPicturePopupInstance,
   cardLikeButton.addEventListener('click', (event) => onLikeCard(event.target.closest('.card__like-button')));
 
   return card;
+}
+
+/**
+ * @function getCardTemplate
+ * @description Возвращает шаблон картчки.
+ * @return {HTMLLIElement} Шаблон карточки.
+ */
+function getCardTemplate() {
+  const cardTemplate = document.querySelector('#card-template').content;
+  return cardTemplate.querySelector('.card').cloneNode(true);
 }
 
 /**
