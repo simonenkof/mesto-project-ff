@@ -47,7 +47,7 @@ function handlePopupClick(event, modal) {
  * @param {HTMLDivElement} modal - Модальное окно.
  */
 function handleEscapeButtonClick(event, modal) {
-  if (event.key === '<E></E>scape') closeModal(modal);
+  if (event.key === 'Escape') closeModal(modal);
 }
 
 /**

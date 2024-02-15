@@ -16,7 +16,7 @@ function createCard(cardData, onDeleteCard, onLikeCard) {
   cardImage.src = cardData.link;
   cardImage.alt = cardData.description;
 
-  cardImage.addEventListener('click', () => handleOnPictureClick(cardImage.src, cardText.textContent));
+  cardImage.addEventListener('click', () => handleOnPictureClick(cardData));
   cardDeleteButton.addEventListener('click', (event) => onDeleteCard(event.target.closest('.card')));
   cardLikeButton.addEventListener('click', (event) => onLikeCard(event.target.closest('.card__like-button')));
 
@@ -28,10 +28,8 @@ function createCard(cardData, onDeleteCard, onLikeCard) {
  * @description Обработчик события "click" на изображение карточки. Генерирует событие "onPictureClick".
  * @param {string} imageLink - Ссылка на изображение.
  */
-function handleOnPictureClick(imageLink, imageCaption) {
-  document.dispatchEvent(
-    new CustomEvent('onPictureClick', { bubbles: true, detail: { imageLink: imageLink, imageCaption: imageCaption } })
-  );
+function handleOnPictureClick(imageData) {
+  document.dispatchEvent(new CustomEvent('onPictureClick', { bubbles: true, detail: { imageData: imageData } }));
 }
 
 /**

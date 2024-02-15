@@ -4,13 +4,18 @@ import { initialCards } from './scripts/cards';
 import { createCard, removeCard, likeCard } from './components/card';
 
 const places = document.querySelector('.places__list');
+const profileName = document.querySelector('.profile__title');
+const profileJob = document.querySelector('.profile__description');
 
 const bigPictureModal = document.querySelector('.popup_type_image');
 const imageBigPictureModal = bigPictureModal.querySelector('.popup__image');
 const captionBigPictureModal = bigPictureModal.querySelector('.popup__caption');
 
-const newCardModal = document.querySelector('.popup_type_new-card');
 const newCardButton = document.querySelector('.profile__add-button');
+const newCardModal = document.querySelector('.popup_type_new-card');
+const newCardForm = document.forms['new-place'];
+const newCardNameInput = newCardForm.elements['place-name'];
+const newCardLinkInput = newCardForm.elements.link;
 
 const profileEditButton = document.querySelector('.profile__edit-button');
 const editModal = document.querySelector('.popup_type_edit');
@@ -18,23 +23,19 @@ const editModalForm = document.forms['edit-profile'];
 const editingName = editModalForm.elements.name;
 const editingJob = editModalForm.elements.description;
 
-const profileName = document.querySelector('.profile__title');
-const profileJob = document.querySelector('.profile__description');
-
 const profileData = {
   name: profileName.textContent,
   job: profileJob.textContent,
 };
 
 /**
- * @function setupEditModalInputs
- * @description Настраивает слушателей событий модального окна и его элементов.
- * @param {HTMLDivElement} inputsData
+ * @function setupEventListeners
+ * @description Настраивает слушателей событий.
  */
-function setupEditModal(inputsData) {
-  editingName.value = inputsData.name;
-  editingJob.value = inputsData.job;
-  editModalForm.addEventListener('submit', handleProfileEdited);
+function setupEventListeners() {
+  document.addEventListener('onPictureClick', (event) => handleOnPictureClick(event.detail.imageData));
+  newCardButton.addEventListener('click', handleNewCardButtonClick);
+  profileEditButton.addEventListener('click', handleEditButtonClick);
 }
 
 /**
@@ -48,14 +49,98 @@ function setupModal(modal) {
 }
 
 /**
- * @function setupEventListeners
- * @description Настраивает слушателей событий.
+ * @function setupBigPictureModal
+ * @description Настраивает модальное окно с увеличенным изображением.
+ * @param {Object} modalData - Информация для модального окна.
  */
-function setupEventListeners() {
-  document.addEventListener('cardAdded', (event) => handleCardAdded(event.detail.cardData));
-  document.addEventListener('onPictureClick', (event) => handleOnPictureClick(event.detail));
-  newCardButton.addEventListener('click', handleNewCardButtonClick);
-  profileEditButton.addEventListener('click', handleEditButtonClick);
+function setupBigPictureModal(modalData) {
+  imageBigPictureModal.src = modalData.link;
+  imageBigPictureModal.alt = modalData.description;
+  captionBigPictureModal.textContent = modalData.name;
+}
+
+/**
+ * @function handleOnPictureClick
+ * @description Обработчик события "onPictureClick". Открывает модальное окно с увеличенным изображением.
+ * @param {Object} cardData - Информация о карточке.
+ */
+function handleOnPictureClick(cardData) {
+  setupBigPictureModal(cardData);
+  baseModal.openModal(bigPictureModal);
+}
+
+/**
+ * @function setupNewCardPopup
+ * @description Настраивает модальное окно добавления новой карточки.
+ */
+function setupNewCardPopup() {
+  newCardForm.addEventListener('submit', handleAddCard);
+}
+
+/**
+ * @function handleNewCardButtonClick
+ * @description Обработчик события "click" кнопки добавления карточки. Открывает модальное окно
+ * добавления карточки.
+ */
+function handleNewCardButtonClick() {
+  clearNewCardModalInpunts();
+  baseModal.openModal(newCardModal);
+}
+
+/**
+ * @function clearNewCardModalInpunts
+ * @description Очищает поля ввода в модальном окне добавления новой карточки.
+ */
+function clearNewCardModalInpunts() {
+  newCardNameInput.value = '';
+  newCardLinkInput.value = '';
+}
+
+/**
+ * @function handleAddCard
+ * @description Обработчик события "submit" формы добавления новой карточки.
+ * Считывает данные формы и передает их для создания новой карточки.
+ * @param {Event} event - Событие "submit".
+ */
+function handleAddCard(event) {
+  event.preventDefault();
+
+  const newCardData = {
+    name: newCardNameInput.value,
+    link: newCardLinkInput.value,
+  };
+
+  addCard(newCardData);
+  baseModal.closeModal(newCardModal);
+}
+
+/**
+ * @function addCard
+ * @description Обработчик события "cardAdded". Добавляет новую карточку в начало списка.
+ * @param {Object} cardData - Информация о карточке.
+ */
+function addCard(cardData) {
+  places.prepend(createCard(cardData, removeCard, likeCard));
+}
+
+/**
+ * @function setupEditModalInputs
+ * @description Настраивает слушателей событий модального окна и его элементов.
+ * @param {HTMLDivElement} inputsData
+ */
+function setupEditModal(inputsData) {
+  editingName.value = inputsData.name;
+  editingJob.value = inputsData.job;
+  editModalForm.addEventListener('submit', handleProfileEdited);
+}
+
+/**
+ * @function handleEditButtonClick
+ * @description Обработчик события "click" кнопки редактирования профиля. Открывает модальное окно
+ * редактирования профиля.
+ */
+function handleEditButtonClick() {
+  baseModal.openModal(editModal);
 }
 
 /**
@@ -85,63 +170,14 @@ function updateProfile(profileData) {
   profileJob.textContent = profileData.job;
 }
 
-/**
- * @function handleNewCardButtonClick
- * @description Обработчик события "click" кнопки добавления карточки. Открывает модальное окно
- * добавления карточки.
- */
-function handleNewCardButtonClick() {
-  newCardPopupInstance.clearInputs();
-  newCardPopupInstance.openPopup();
-}
-
-/**
- * @function handleEditButtonClick
- * @description Обработчик события "click" кнопки редактирования профиля. Открывает модальное окно
- * редактирования профиля.
- */
-function handleEditButtonClick() {
-  baseModal.openModal(editModal);
-}
-
-/**
- * @function handleOnPictureClick
- * @description Обработчик события "onPictureClick". Открывает модальное окно с увеличенным изображением.
- * @param {Object} cardData - Информация о карточке.
- */
-function handleOnPictureClick(cardData) {
-  setupBigPictureModal(cardData);
-  baseModal.openModal(bigPictureModal);
-}
-
-/**
- * @function setupBigPictureModal
- * @description Настраивает модальное окно с увеличенным изображением.
- * @param {Object} modalData - Информация для модального окна.
- */
-function setupBigPictureModal(modalData) {
-  imageBigPictureModal.src = modalData.imageLink;
-  captionBigPictureModal.textContent = modalData.imageCaption;
-}
-
-/**
- * @function handleCardAdded
- * @description Обработчик события "cardAdded". Добавляет новую карточку в начало списка.
- * @param {Object} cardData - Информация о карточке.
- */
-function handleCardAdded(cardData) {
-  places.prepend(
-    createCard(cardData, removeCard, likeCard, bigPicturePopupInstance, bigPicturePopupInstance.onPictureClick)
-  );
-}
-
 setupEventListeners();
 setupEditModal(profileData);
+setupNewCardPopup();
 
 for (const modal of [bigPictureModal, newCardModal, editModal]) {
   setupModal(modal);
 }
 
 for (const cardData of initialCards) {
-  places.append(createCard(cardData, removeCard, likeCard, handleOnPictureClick));
+  places.append(createCard(cardData, removeCard, likeCard));
 }
