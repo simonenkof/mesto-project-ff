@@ -5,7 +5,7 @@
  * @param {Function} onDeleteCard - Колбек для удаления карточки.
  * @return {Object} Созданная карточка
  */
-function createCard(cardData, onDeleteCard, onLikeCard, bigPicturePopupInstance, onPicture) {
+function createCard(cardData, onDeleteCard, onLikeCard, onPicture) {
   const card = getCardTemplate();
   const cardText = card.querySelector('.card__title');
   const cardImage = card.querySelector('.card__image');
@@ -16,7 +16,7 @@ function createCard(cardData, onDeleteCard, onLikeCard, bigPicturePopupInstance,
   cardImage.src = cardData.link;
   cardImage.alt = cardData.description;
 
-  cardImage.addEventListener('click', () => onPicture.call(bigPicturePopupInstance, cardData));
+  cardImage.addEventListener('click', onPicture);
   cardDeleteButton.addEventListener('click', (event) => onDeleteCard(event.target.closest('.card')));
   cardLikeButton.addEventListener('click', (event) => onLikeCard(event.target.closest('.card__like-button')));
 

@@ -1,27 +1,47 @@
 import './pages/index.css';
-import BigPicturePopup from './components/big-picture-modal';
-import NewCardPopup from './components/new-card-modal';
-import EditPopup from './components/edit-modal';
+import * as baseModal from './components/modal';
 import { initialCards } from './scripts/cards';
 import { createCard, removeCard, likeCard } from './components/card';
 
 const places = document.querySelector('.places__list');
-const bigPicturePopup = document.querySelector('.popup_type_image');
-const newCardPopup = document.querySelector('.popup_type_new-card');
+const bigPictureModal = document.querySelector('.popup_type_image');
+const newCardModal = document.querySelector('.popup_type_new-card');
 const newCardButton = document.querySelector('.profile__add-button');
-const editPopup = document.querySelector('.popup_type_edit');
+
 const profileEditButton = document.querySelector('.profile__edit-button');
-const profileTitle = document.querySelector('.profile__title');
+const editModal = document.querySelector('.popup_type_edit');
+const editModalForm = document.forms['edit-profile'];
+const editingName = editModalForm.elements.name;
+const editingJob = editModalForm.elements.description;
+
+const profileName = document.querySelector('.profile__title');
 const profileJob = document.querySelector('.profile__description');
 
 const profileData = {
-  name: profileTitle.textContent,
+  name: profileName.textContent,
   job: profileJob.textContent,
 };
 
-const bigPicturePopupInstance = new BigPicturePopup(bigPicturePopup);
-const newCardPopupInstance = new NewCardPopup(newCardPopup);
-const editPopupInstance = new EditPopup(editPopup, profileData);
+/**
+ * @function setupEditModalInputs
+ * @description Настраивает слушателей событий модального окна и его элементов.
+ * @param {HTMLDivElement} inputsData
+ */
+function setupEditModal(inputsData) {
+  editingName.value = inputsData.name;
+  editingJob.value = inputsData.job;
+  editModalForm.addEventListener('submit', handleProfileEdited);
+}
+
+/**
+ * @function setupModal
+ * @description Настраивает слушателей событий модального окна и его элементов.
+ * @param {HTMLDivElement} modal - Модальное окно.
+ */
+function setupModal(modal) {
+  const closeButton = modal.querySelector('.popup__close');
+  baseModal.setupModalEventListeners(modal, closeButton);
+}
 
 /**
  * @function setupEventListeners
@@ -29,7 +49,6 @@ const editPopupInstance = new EditPopup(editPopup, profileData);
  */
 function setupEventListeners() {
   document.addEventListener('cardAdded', (event) => handleCardAdded(event.detail.cardData));
-  document.addEventListener('profileEdited', (event) => handleProfileEdited(event.detail));
   newCardButton.addEventListener('click', handleNewCardButtonClick);
   profileEditButton.addEventListener('click', handleEditButtonClick);
 }
@@ -50,8 +69,25 @@ function handleCardAdded(cardData) {
  * @description Обработчик события "profileEdited". Изменяет данные профиля.
  * @param {Object} profileData - Информация профиле.
  */
-function handleProfileEdited(profileData) {
-  profileTitle.textContent = profileData.name;
+function handleProfileEdited(event) {
+  event.preventDefault();
+
+  const profileData = {
+    name: editingName.value,
+    job: editingJob.value,
+  };
+
+  updateProfile(profileData);
+  baseModal.closeModal(editModal);
+}
+
+/**
+ * @function updateProfile
+ * @description Обновляет данные профиля.
+ * @param {Object} profileData - Новые данные профиля.
+ */
+function updateProfile(profileData) {
+  profileName.textContent = profileData.name;
   profileJob.textContent = profileData.job;
 }
 
@@ -71,13 +107,18 @@ function handleNewCardButtonClick() {
  * редактирования профиля.
  */
 function handleEditButtonClick() {
-  editPopupInstance.openPopup();
+  baseModal.openModal(editModal);
 }
 
+function handleOnPictureClick() {}
+
 setupEventListeners();
+setupEditModal(profileData);
+
+for (const modal of [bigPictureModal, newCardModal, editModal]) {
+  setupModal(modal);
+}
 
 for (const cardData of initialCards) {
-  places.append(
-    createCard(cardData, removeCard, likeCard, bigPicturePopupInstance, bigPicturePopupInstance.onPictureClick)
-  );
+  places.append(createCard(cardData, removeCard, likeCard, handleOnPictureClick));
 }
