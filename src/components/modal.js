@@ -1,3 +1,5 @@
+let currentModal;
+
 /**
  * @function setupModalEventListeners
  * @description Настраивает слушателей событий модального окна.
@@ -9,25 +11,36 @@ function setupModalEventListeners(modal, closeButton) {
 }
 
 /**
- * @function closeModal
- * @description Закрывает модальное окно.
- * @param {HTMLDivElement} modal - Модальное окно.
- */
-function closeModal(modal) {
-  document.removeEventListener('keydown', (event) => handleEscapeButtonClick(event, modal));
-  modal.classList.remove('popup_is-opened');
-  modal.classList.add('popup_is-animated');
-}
-
-/**
  * @function openModal
  * @description Открывает модальное окно.
  * @param {HTMLDivElement} modal - Модальное окно.
  */
 function openModal(modal) {
-  document.addEventListener('keydown', (event) => handleEscapeButtonClick(event, modal));
+  currentModal = modal;
+  document.addEventListener('keydown', handleKeyDown);
   modal.classList.remove('popup_is-animated');
   modal.classList.add('popup_is-opened');
+}
+
+/**
+ * @function closeModal
+ * @description Закрывает модальное окно.
+ * @param {HTMLDivElement} modal - Модальное окно.
+ */
+function closeModal(modal) {
+  currentModal = modal;
+  document.removeEventListener('keydown', handleKeyDown);
+  modal.classList.remove('popup_is-opened');
+  modal.classList.add('popup_is-animated');
+}
+
+/**
+ * @function handleKeyDown
+ * @description Обработчик события "keyDown" клавиатуры.
+ * @param {Event} event - Событие.
+ */
+function handleKeyDown(event) {
+  handleEscapeButtonClick(event, currentModal);
 }
 
 /**
@@ -42,8 +55,7 @@ function handlePopupClick(event, modal) {
 
 /**
  * @function handleEscapeButtonClick
- * @description Обработчик события "keydown" клавиатуры. Закрывает модальное окно,
- * если была нажата клавиша Escape.
+ * @description Закрывает модальное окно, если была нажата клавиша Escape.
  * @param {HTMLDivElement} modal - Модальное окно.
  */
 function handleEscapeButtonClick(event, modal) {
