@@ -18,22 +18,16 @@ const newCardNameInput = newCardForm.elements['place-name'];
 const newCardLinkInput = newCardForm.elements.link;
 
 const profileEditButton = document.querySelector('.profile__edit-button');
-const editModal = document.querySelector('.popup_type_edit');
-const editModalForm = document.forms['edit-profile'];
-const editingName = editModalForm.elements.name;
-const editingJob = editModalForm.elements.description;
-
-const profileData = {
-  name: profileName.textContent,
-  job: profileJob.textContent,
-};
+const editProfileModal = document.querySelector('.popup_type_edit');
+const formEditModal = document.forms['edit-profile'];
+const nameInput = formEditModal.elements.name;
+const jobInput = formEditModal.elements.description;
 
 /**
  * @function setupEventListeners
  * @description Настраивает слушателей событий.
  */
 function setupEventListeners() {
-  document.addEventListener('onPictureClick', (event) => handleOnPictureClick(event.detail.imageData));
   newCardButton.addEventListener('click', handleNewCardButtonClick);
   profileEditButton.addEventListener('click', handleEditButtonClick);
 }
@@ -93,8 +87,7 @@ function handleNewCardButtonClick() {
  * @description Очищает поля ввода в модальном окне добавления новой карточки.
  */
 function clearNewCardModalInpunts() {
-  newCardNameInput.value = '';
-  newCardLinkInput.value = '';
+  newCardForm.reset();
 }
 
 /**
@@ -130,9 +123,9 @@ function addCard(cardData) {
  * @param {HTMLDivElement} inputsData
  */
 function setupEditModal(inputsData) {
-  editingName.value = inputsData.name;
-  editingJob.value = inputsData.job;
-  editModalForm.addEventListener('submit', handleProfileEdited);
+  nameInput.value = inputsData.name;
+  jobInput.value = inputsData.job;
+  formEditModal.addEventListener('submit', handleProfileEdited);
 }
 
 /**
@@ -141,7 +134,22 @@ function setupEditModal(inputsData) {
  * редактирования профиля.
  */
 function handleEditButtonClick() {
-  baseModal.openModal(editModal);
+  const profileData = {
+    name: profileName.textContent,
+    job: profileJob.textContent,
+  };
+
+  setupProfileData(profileData);
+  baseModal.openModal(editProfileModal);
+}
+
+/**
+ * @function setupProfileData
+ * @description Устанавливает значения полей ввода в окне редактирования профиля.
+ */
+function setupProfileData(inputsData) {
+  nameInput.value = inputsData.name;
+  jobInput.value = inputsData.job;
 }
 
 /**
@@ -153,12 +161,12 @@ function handleProfileEdited(event) {
   event.preventDefault();
 
   const profileData = {
-    name: editingName.value,
-    job: editingJob.value,
+    name: nameInput.value,
+    job: jobInput.value,
   };
 
   updateProfile(profileData);
-  baseModal.closeModal(editModal);
+  baseModal.closeModal(editProfileModal);
 }
 
 /**
@@ -171,11 +179,16 @@ function updateProfile(profileData) {
   profileJob.textContent = profileData.job;
 }
 
+const profileData = {
+  name: profileName.textContent,
+  job: profileJob.textContent,
+};
+
 setupEventListeners();
 setupEditModal(profileData);
 setupNewCardPopup();
 
-for (const modal of [bigPictureModal, newCardModal, editModal]) {
+for (const modal of [bigPictureModal, newCardModal, editProfileModal]) {
   setupModal(modal);
 }
 
