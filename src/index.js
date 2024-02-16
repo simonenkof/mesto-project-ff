@@ -51,20 +51,21 @@ function setupModal(modal) {
 /**
  * @function setupBigPictureModal
  * @description Настраивает модальное окно с увеличенным изображением.
- * @param {Object} modalData - Информация для модального окна.
+ * @param {Object} imageData - Информация об изображении.
  */
-function setupBigPictureModal(modalData) {
-  imageBigPictureModal.src = modalData.link;
-  imageBigPictureModal.alt = modalData.description;
-  captionBigPictureModal.textContent = modalData.name;
+function setupBigPictureModal(imageData) {
+  imageBigPictureModal.src = imageData.link;
+  imageBigPictureModal.alt = imageData.description;
+  captionBigPictureModal.textContent = imageData.name;
 }
 
 /**
- * @function handleOnPictureClick
- * @description Обработчик события "onPictureClick". Открывает модальное окно с увеличенным изображением.
+ * @function onPictureClick
+ * @description Открывает модальное окно с увеличенным изображением.
  * @param {Object} cardData - Информация о карточке.
  */
-function handleOnPictureClick(cardData) {
+function onPictureClick(cardData) {
+  setupBigPictureModal(cardData);
   setupBigPictureModal(cardData);
   baseModal.openModal(bigPictureModal);
 }
@@ -120,7 +121,7 @@ function handleAddCard(event) {
  * @param {Object} cardData - Информация о карточке.
  */
 function addCard(cardData) {
-  places.prepend(createCard(cardData, removeCard, likeCard));
+  places.prepend(createCard(cardData, removeCard, likeCard, onPictureClick));
 }
 
 /**
@@ -179,5 +180,5 @@ for (const modal of [bigPictureModal, newCardModal, editModal]) {
 }
 
 for (const cardData of initialCards) {
-  places.append(createCard(cardData, removeCard, likeCard));
+  places.append(createCard(cardData, removeCard, likeCard, onPictureClick));
 }
