@@ -24,8 +24,7 @@ function openModal(modal) {
  * @function closeModal
  * @description Закрывает модальное окно.
  */
-function closeModal() {
-  const modal = document.querySelector('.popup_is-opened');
+function closeModal(modal) {
   document.removeEventListener('keydown', handleEscapeButtonClick);
   modal.classList.remove('popup_is-opened');
   modal.classList.add('popup_is-animated');
@@ -37,7 +36,7 @@ function closeModal() {
  * @param {Event} event - Событие.
  */
 function handlePopupClick(event) {
-  if (event.target.classList.contains('popup')) closeModal();
+  if (event.target.classList.contains('popup')) closeModal(getOpenedModal());
 }
 
 /**
@@ -46,7 +45,7 @@ function handlePopupClick(event) {
  * @param {Event} event - Событие.
  */
 function handleEscapeButtonClick(event) {
-  if (event.key === 'Escape') closeModal();
+  if (event.key === 'Escape') closeModal(getOpenedModal());
 }
 
 /**
@@ -54,7 +53,16 @@ function handleEscapeButtonClick(event) {
  * @description Обработчик события "click" кнопки закрытия модального окна.
  */
 function handleCloseButtonClick() {
-  closeModal();
+  closeModal(getOpenedModal());
+}
+
+/**
+ * @function getOpenedModal
+ * @description Возвращает открытое модальное окно.
+ * @return {HTMLDivElement} Открытое модальное окно
+ */
+function getOpenedModal() {
+  return document.querySelector('.popup_is-opened');
 }
 
 export { setupModalEventListeners, closeModal, openModal };

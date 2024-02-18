@@ -96,7 +96,7 @@ function handleAddCard(event) {
   };
 
   addCard(newCardData);
-  baseModal.closeModal();
+  baseModal.closeModal(newCardModal);
 }
 
 /**
@@ -155,7 +155,7 @@ function handleProfileEdited(event) {
   };
 
   updateProfile(profileData);
-  baseModal.closeModal();
+  baseModal.closeModal(editProfileModal);
 }
 
 /**
