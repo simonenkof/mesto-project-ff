@@ -60,7 +60,6 @@ function setupBigPictureModal(imageData) {
  */
 function onPictureClick(cardData) {
   setupBigPictureModal(cardData);
-  setupBigPictureModal(cardData);
   baseModal.openModal(bigPictureModal);
 }
 
@@ -78,16 +77,8 @@ function setupNewCardPopup() {
  * добавления карточки.
  */
 function handleNewCardButtonClick() {
-  clearNewCardModalInpunts();
-  baseModal.openModal(newCardModal);
-}
-
-/**
- * @function clearNewCardModalInpunts
- * @description Очищает поля ввода в модальном окне добавления новой карточки.
- */
-function clearNewCardModalInpunts() {
   newCardForm.reset();
+  baseModal.openModal(newCardModal);
 }
 
 /**
@@ -105,7 +96,7 @@ function handleAddCard(event) {
   };
 
   addCard(newCardData);
-  baseModal.closeModal(newCardModal);
+  baseModal.closeModal();
 }
 
 /**
@@ -120,11 +111,8 @@ function addCard(cardData) {
 /**
  * @function setupEditModalInputs
  * @description Настраивает слушателей событий модального окна и его элементов.
- * @param {HTMLDivElement} inputsData
  */
-function setupEditModal(inputsData) {
-  nameInput.value = inputsData.name;
-  jobInput.value = inputsData.job;
+function setupEditModal() {
   formEditModal.addEventListener('submit', handleProfileEdited);
 }
 
@@ -146,6 +134,7 @@ function handleEditButtonClick() {
 /**
  * @function setupProfileData
  * @description Устанавливает значения полей ввода в окне редактирования профиля.
+ * @param {Object} inputsData - Обновленные данные профиля.
  */
 function setupProfileData(inputsData) {
   nameInput.value = inputsData.name;
@@ -155,7 +144,7 @@ function setupProfileData(inputsData) {
 /**
  * @function handleProfileEdited
  * @description Обработчик события "profileEdited". Изменяет данные профиля.
- * @param {Object} profileData - Информация профиле.
+ * @param {Event} event - Событие.
  */
 function handleProfileEdited(event) {
   event.preventDefault();
@@ -166,7 +155,7 @@ function handleProfileEdited(event) {
   };
 
   updateProfile(profileData);
-  baseModal.closeModal(editProfileModal);
+  baseModal.closeModal();
 }
 
 /**
@@ -179,13 +168,8 @@ function updateProfile(profileData) {
   profileJob.textContent = profileData.job;
 }
 
-const profileData = {
-  name: profileName.textContent,
-  job: profileJob.textContent,
-};
-
 setupEventListeners();
-setupEditModal(profileData);
+setupEditModal();
 setupNewCardPopup();
 
 for (const modal of [bigPictureModal, newCardModal, editProfileModal]) {

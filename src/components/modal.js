@@ -1,13 +1,12 @@
-let currentModal;
-
 /**
  * @function setupModalEventListeners
  * @description Настраивает слушателей событий модального окна.
  * @param {HTMLDivElement} modal - Модальное окно.
+ * @param {HTMLButtonElement} closeButton - Кнопка закрытия модального окна.
  */
 function setupModalEventListeners(modal, closeButton) {
-  modal.addEventListener('click', (event) => handlePopupClick(event, modal));
-  closeButton.addEventListener('click', () => handleCloseButtonClick(modal));
+  modal.addEventListener('click', handlePopupClick);
+  closeButton.addEventListener('click', handleCloseButtonClick);
 }
 
 /**
@@ -16,8 +15,7 @@ function setupModalEventListeners(modal, closeButton) {
  * @param {HTMLDivElement} modal - Модальное окно.
  */
 function openModal(modal) {
-  currentModal = modal;
-  document.addEventListener('keydown', handleKeyDown);
+  document.addEventListener('keydown', handleEscapeButtonClick);
   modal.classList.remove('popup_is-animated');
   modal.classList.add('popup_is-opened');
 }
@@ -25,50 +23,38 @@ function openModal(modal) {
 /**
  * @function closeModal
  * @description Закрывает модальное окно.
- * @param {HTMLDivElement} modal - Модальное окно.
  */
-function closeModal(modal) {
-  currentModal = modal;
-  document.removeEventListener('keydown', handleKeyDown);
+function closeModal() {
+  const modal = document.querySelector('.popup_is-opened');
+  document.removeEventListener('keydown', handleEscapeButtonClick);
   modal.classList.remove('popup_is-opened');
   modal.classList.add('popup_is-animated');
 }
 
 /**
- * @function handleKeyDown
- * @description Обработчик события "keyDown" клавиатуры.
- * @param {Event} event - Событие.
- */
-function handleKeyDown(event) {
-  handleEscapeButtonClick(event, currentModal);
-}
-
-/**
  * @function handlePopupClick
  * @description Обработчик события "click" вне контейнера модального окна.
- * @param {Object} eventTarget - Инициатор события.
- * @param {HTMLDivElement} modal - Модальное окно.
+ * @param {Event} event - Событие.
  */
-function handlePopupClick(event, modal) {
-  if (event.target.classList.contains('popup')) closeModal(modal);
+function handlePopupClick(event) {
+  if (event.target.classList.contains('popup')) closeModal();
 }
 
 /**
  * @function handleEscapeButtonClick
  * @description Закрывает модальное окно, если была нажата клавиша Escape.
- * @param {HTMLDivElement} modal - Модальное окно.
+ * @param {Event} event - Событие.
  */
-function handleEscapeButtonClick(event, modal) {
-  if (event.key === 'Escape') closeModal(modal);
+function handleEscapeButtonClick(event) {
+  if (event.key === 'Escape') closeModal();
 }
 
 /**
  * @function handleCloseButtonClick
  * @description Обработчик события "click" кнопки закрытия модального окна.
- * @param {HTMLDivElement} modal - Модальное окно.
  */
-function handleCloseButtonClick(modal) {
-  closeModal(modal);
+function handleCloseButtonClick() {
+  closeModal();
 }
 
 export { setupModalEventListeners, closeModal, openModal };
