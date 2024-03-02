@@ -2,6 +2,7 @@ import './pages/index.css';
 import * as baseModal from './components/modal';
 import { initialCards } from './scripts/cards';
 import { createCard, removeCard, likeCard } from './components/card';
+import { enableValidation, clearValidation } from './scripts/validation';
 
 const places = document.querySelector('.places__list');
 const profileName = document.querySelector('.profile__title');
@@ -22,6 +23,15 @@ const editProfileModal = document.querySelector('.popup_type_edit');
 const formEditModal = document.forms['edit-profile'];
 const nameInput = formEditModal.elements.name;
 const jobInput = formEditModal.elements.description;
+
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible',
+};
 
 /**
  * @function setupEventListeners
@@ -78,6 +88,7 @@ function setupNewCardPopup() {
  */
 function handleNewCardButtonClick() {
   newCardForm.reset();
+  clearValidation(newCardForm, validationConfig);
   baseModal.openModal(newCardModal);
 }
 
@@ -128,6 +139,7 @@ function handleEditButtonClick() {
   };
 
   setupProfileData(profileData);
+  clearValidation(editProfileModal, validationConfig);
   baseModal.openModal(editProfileModal);
 }
 
@@ -171,6 +183,7 @@ function updateProfile(profileData) {
 setupEventListeners();
 setupEditModal();
 setupNewCardPopup();
+enableValidation(validationConfig);
 
 for (const modal of [bigPictureModal, newCardModal, editProfileModal]) {
   setupModal(modal);
