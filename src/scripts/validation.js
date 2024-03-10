@@ -23,7 +23,10 @@ function getValidationMessage(inputElement) {
 }
 
 function checkInputValidity(formElement, inputElement, validationConfig) {
-  if (!inputElement.validity.valid || !regex.test(inputElement.value)) {
+  if (
+    inputElement.id !== 'popup__input_type_url' &&
+    (!inputElement.validity.valid || !regex.test(inputElement.value))
+  ) {
     showInputError(formElement, inputElement, getValidationMessage(inputElement), validationConfig);
   } else {
     hideInputError(formElement, inputElement, validationConfig);
@@ -31,7 +34,13 @@ function checkInputValidity(formElement, inputElement, validationConfig) {
 }
 
 function hasInvalidInput(inputList) {
-  return inputList.some((inputElement) => !inputElement.validity.valid || !regex.test(inputElement.value));
+  return inputList.some((inputElement) => {
+    if (inputElement.id === 'popup__input_type_url') {
+      return !inputElement.validity.valid;
+    } else {
+      return !inputElement.validity.valid || !regex.test(inputElement.value);
+    }
+  });
 }
 
 function toggleButtonState(inputList, buttonElement, inactiveButtonClass) {
