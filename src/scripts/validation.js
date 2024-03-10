@@ -1,3 +1,5 @@
+const regex = /^(?:[a-zA-Zа-яА-Я\s-]*)$/;
+
 function showInputError(formElement, inputElement, errorMessage, validationConfig) {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.add(validationConfig.inputErrorClass);
@@ -13,18 +15,14 @@ function hideInputError(formElement, inputElement, validationConfig) {
 }
 
 function getValidationMessage(inputElement) {
-  const regex = /^(?:[a-zA-Zа-яА-Я\s-]*)$/;
-
   if (regex.test(inputElement.value)) {
     return inputElement.validationMessage;
   } else {
-    return 'Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы';
+    return inputElement.dataset.errorMessage;
   }
 }
 
 function checkInputValidity(formElement, inputElement, validationConfig) {
-  const regex = /^(?:[a-zA-Zа-яА-Я\s-]*)$/;
-
   if (!inputElement.validity.valid || !regex.test(inputElement.value)) {
     showInputError(formElement, inputElement, getValidationMessage(inputElement), validationConfig);
   } else {
@@ -33,7 +31,6 @@ function checkInputValidity(formElement, inputElement, validationConfig) {
 }
 
 function hasInvalidInput(inputList) {
-  const regex = /^(?:[a-zA-Zа-яА-Я\s-]*)$/;
   return inputList.some((inputElement) => !inputElement.validity.valid || !regex.test(inputElement.value));
 }
 
