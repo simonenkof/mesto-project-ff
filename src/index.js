@@ -3,6 +3,7 @@ import * as baseModal from './components/modal';
 import { initialCards } from './scripts/cards';
 import { createCard, removeCard, likeCard } from './components/card';
 import { enableValidation, clearValidation } from './scripts/validation';
+import { userInfo } from './scripts/api';
 
 const places = document.querySelector('.places__list');
 const profileName = document.querySelector('.profile__title');
