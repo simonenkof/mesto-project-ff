@@ -1,9 +1,8 @@
 import './pages/index.css';
 import * as baseModal from './components/modal';
-import { initialCards } from './scripts/cards';
 import { createCard, removeCard, likeCard } from './components/card';
 import { enableValidation, clearValidation } from './scripts/validation';
-import { getUserInfo } from './scripts/api';
+import { getUserInfo, getCards, updateProfileData } from './scripts/api';
 
 const places = document.querySelector('.places__list');
 const profileName = document.querySelector('.profile__title');
@@ -165,9 +164,10 @@ function handleProfileEdited(event) {
 
   const profileData = {
     name: nameInput.value,
-    job: jobInput.value,
+    about: jobInput.value,
   };
 
+  updateProfileData(profileData);
   updateProfile(profileData);
   baseModal.closeModal(editProfileModal);
 }
@@ -179,7 +179,7 @@ function handleProfileEdited(event) {
  */
 function updateProfile(profileData) {
   profileName.textContent = profileData.name;
-  profileJob.textContent = profileData.job;
+  profileJob.textContent = profileData.about;
 
   if (profileData.avatar) {
     pofileAvatar.style.backgroundImage = `url(${profileData.avatar})`;
@@ -189,11 +189,11 @@ function updateProfile(profileData) {
 setupEventListeners();
 setupEditModal();
 setupNewCardPopup();
-enableValidation(validationConfig);
+// enableValidation(validationConfig);
 
 const profileData = async () => {
   const data = await getUserInfo();
-  return { name: data.name, job: data.about, avatar: data.avatar };
+  return { name: data.name, about: data.about, avatar: data.avatar };
 };
 
 updateProfile(await profileData());
@@ -202,6 +202,8 @@ for (const modal of [bigPictureModal, newCardModal, editProfileModal]) {
   setupModal(modal);
 }
 
-for (const cardData of initialCards) {
-  places.append(createCard(cardData, removeCard, likeCard, onPictureClick));
-}
+Promise.all([getCards(), getUserInfo()]).then((res) => {
+  res[0].forEach((card) => {
+    places.append(createCard(card, removeCard, likeCard, onPictureClick));
+  });
+});

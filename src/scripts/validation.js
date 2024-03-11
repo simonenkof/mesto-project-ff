@@ -33,6 +33,7 @@ function checkInputValidity(formElement, inputElement, validationConfig) {
   }
 }
 
+// TODO: не работает валидация
 function hasInvalidInput(inputList) {
   return inputList.some((inputElement) => {
     if (inputElement.id === 'popup__input_type_url') {

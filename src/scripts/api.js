@@ -21,3 +21,30 @@ export const getUserInfo = async () => {
     .then((data) => data)
     .catch((err) => console.log(err));
 };
+
+export const getCards = async () => {
+  return fetch(`${config.baseUrl}/cards`, {
+    method: 'GET',
+    headers: config.headers,
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+
+      return Promise.reject(`Что-то пошло не так: ${res.status}`);
+    })
+    .then((data) => data)
+    .catch((err) => console.log(err));
+};
+
+export const updateProfileData = async (profileData) => {
+  fetch(`${config.baseUrl}/users/me`, {
+    method: 'PATCH',
+    headers: config.headers,
+    body: JSON.stringify({
+      name: profileData.name,
+      about: profileData.about,
+    }),
+  }).catch((err) => console.log(err));
+};
