@@ -6,7 +6,7 @@ const config = {
   },
 };
 
-export const userInfo = async () => {
+export const getUserInfo = async () => {
   return fetch(`${config.baseUrl}/users/me`, {
     method: 'GET',
     headers: config.headers,

@@ -3,11 +3,12 @@ import * as baseModal from './components/modal';
 import { initialCards } from './scripts/cards';
 import { createCard, removeCard, likeCard } from './components/card';
 import { enableValidation, clearValidation } from './scripts/validation';
-import { userInfo } from './scripts/api';
+import { getUserInfo } from './scripts/api';
 
 const places = document.querySelector('.places__list');
 const profileName = document.querySelector('.profile__title');
 const profileJob = document.querySelector('.profile__description');
+const pofileAvatar = document.querySelector('.profile__image');
 
 const bigPictureModal = document.querySelector('.popup_type_image');
 const imageBigPictureModal = bigPictureModal.querySelector('.popup__image');
@@ -179,12 +180,23 @@ function handleProfileEdited(event) {
 function updateProfile(profileData) {
   profileName.textContent = profileData.name;
   profileJob.textContent = profileData.job;
+
+  if (profileData.avatar) {
+    pofileAvatar.style.backgroundImage = `url(${profileData.avatar})`;
+  }
 }
 
 setupEventListeners();
 setupEditModal();
 setupNewCardPopup();
 enableValidation(validationConfig);
+
+const profileData = async () => {
+  const data = await getUserInfo();
+  return { name: data.name, job: data.about, avatar: data.avatar };
+};
+
+updateProfile(await profileData());
 
 for (const modal of [bigPictureModal, newCardModal, editProfileModal]) {
   setupModal(modal);
