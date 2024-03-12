@@ -60,7 +60,12 @@ function likeCard(card, cardId) {
 
   if (cardButton.classList.contains('card__like-button_is-active')) {
     cardButton.classList.remove('card__like-button_is-active');
-    // api.dislikeCard(cardId);
+    api
+      .dislikeCard(cardId)
+      .then((res) => res.likes.length)
+      .then((likes) => {
+        cardLikes.textContent = likes;
+      });
   } else {
     cardButton.classList.add('card__like-button_is-active');
     api
