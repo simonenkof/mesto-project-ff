@@ -18,17 +18,20 @@ const newCardModal = document.querySelector('.popup_type_new-card');
 const newCardForm = document.forms['new-place'];
 const newCardNameInput = newCardForm.elements['place-name'];
 const newCardLinkInput = newCardForm.elements.link;
+const saveButtonNewCardModal = newCardForm.elements['save-button'];
 
 const profileEditButton = document.querySelector('.profile__edit-button');
 const editProfileModal = document.querySelector('.popup_type_edit');
 const formEditModal = document.forms['edit-profile'];
 const nameInput = formEditModal.elements.name;
 const jobInput = formEditModal.elements.description;
+const saveButtonEditProfile = newCardForm.elements['save-button'];
 
 const profileAvatarEditButton = document.querySelector('.profile__image-container');
 const profileAvatarModal = document.querySelector('.popup_type_edit-avatar');
 const profleAvatarForm = document.forms['profile-avatar'];
 const avatarLinkInput = profleAvatarForm.elements.link;
+const saveButtonAvatarEdit = newCardForm.elements['save-button'];
 
 const validationConfig = {
   formSelector: '.popup__form',
@@ -108,6 +111,8 @@ function handleNewCardButtonClick() {
 function handleAddCard(event) {
   event.preventDefault();
 
+  renderLoading(saveButtonNewCardModal, true);
+
   const newCardData = {
     name: newCardNameInput.value,
     link: newCardLinkInput.value,
@@ -119,9 +124,12 @@ function handleAddCard(event) {
       cardData.liked = cardData.likes.some((user) => user['_id'] === res[1]['_id']);
       cardData.userOwner = cardData.owner['_id'] === res[1]['_id'];
       addCard(cardData);
-      baseModal.closeModal(newCardModal);
     })
-    .catch((err) => console.log(err));
+    .catch((err) => console.log(err))
+    .finally(() => {
+      baseModal.closeModal(newCardModal);
+      renderLoading(saveButtonNewCardModal, false);
+    });
 }
 
 /**
@@ -175,14 +183,23 @@ function setupProfileData(inputsData) {
 function handleProfileEdited(event) {
   event.preventDefault();
 
+  renderLoading(saveButtonEditProfile, true);
+
   const profileData = {
     name: nameInput.value,
     about: jobInput.value,
   };
 
-  api.updateProfileData(profileData);
-  updateProfile(profileData);
-  baseModal.closeModal(editProfileModal);
+  api
+    .updateProfileData(profileData)
+    .then((res) => {
+      updateProfile({ name: res.name, about: res.about });
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      baseModal.closeModal(editProfileModal);
+      renderLoading(saveButtonEditProfile, false);
+    });
 }
 
 /**
@@ -213,6 +230,7 @@ function setupProfileAvatarModal() {
  * редактирования аватара профиля.
  */
 function handleEditAvatarButtonClick() {
+  profleAvatarForm.reset();
   baseModal.openModal(profileAvatarModal);
 }
 
@@ -224,14 +242,29 @@ function handleEditAvatarButtonClick() {
 function handleProfileAvatarEdited(event) {
   event.preventDefault();
 
+  renderLoading(saveButtonAvatarEdit, true);
+
   api
     .updateUserAvatar(avatarLinkInput.value)
     .then((res) => res.avatar)
     .then((avatar) => {
       pofileAvatar.style.backgroundImage = `url(${avatar})`;
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      renderLoading(saveButtonAvatarEdit, false);
+      baseModal.closeModal(profileAvatarModal);
     });
+}
 
-  baseModal.closeModal(profileAvatarModal);
+/**
+ * @function renderLoading
+ * @description Управляет отображением загрузки.
+ * @param {HTMLButtonElement} button - Кнопка, на которой нужно отобразить загрузку.
+ * @param {boolean} state - Флаг загрузки.
+ */
+function renderLoading(button, state) {
+  button.textContent = state ? 'Сохранение...' : 'Сохранить';
 }
 
 setupEventListeners();
