@@ -105,15 +105,14 @@ function handleAddCard(event) {
   const newCardData = {
     name: newCardNameInput.value,
     link: newCardLinkInput.value,
-    likes: [],
   };
 
-  api.createCard(newCardData);
-  // TODO: не подгружаются данные с сервера о карточке
-  addCard(newCardData);
-
-  baseModal.closeModal(newCardModal);
-  updateCards();
+  Promise.all([api.createCard(newCardData), api.getUserInfo()]).then((res) => {
+    const cardData = res[0];
+    cardData.userOwner = cardData.owner['_id'] === res[1]['_id'];
+    addCard(cardData);
+    baseModal.closeModal(newCardModal);
+  });
 }
 
 /**

@@ -65,6 +65,7 @@ export const createCard = async (cardData) => {
 
       return Promise.reject(`Что-то пошло не так: ${res.status}`);
     })
+    .then((res) => res)
     .catch((err) => console.log(err));
 };
 
