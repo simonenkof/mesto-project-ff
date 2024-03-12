@@ -107,12 +107,14 @@ function handleAddCard(event) {
     link: newCardLinkInput.value,
   };
 
-  Promise.all([api.createCard(newCardData), api.getUserInfo()]).then((res) => {
-    const cardData = res[0];
-    cardData.userOwner = cardData.owner['_id'] === res[1]['_id'];
-    addCard(cardData);
-    baseModal.closeModal(newCardModal);
-  });
+  Promise.all([api.createCard(newCardData), api.getUserInfo()])
+    .then((res) => {
+      const cardData = res[0];
+      cardData.userOwner = cardData.owner['_id'] === res[1]['_id'];
+      addCard(cardData);
+      baseModal.closeModal(newCardModal);
+    })
+    .catch((err) => console.log(err));
 }
 
 /**
@@ -190,20 +192,10 @@ function updateProfile(profileData) {
   }
 }
 
-function updateCards() {
-  Promise.all([api.getCards(), api.getUserInfo()]).then((res) => {
-    res[0].forEach((card) => {
-      card.userOwner = card.owner['_id'] === res[1]['_id'];
-      places.append(createCard(card, removeCard, likeCard, onPictureClick));
-    });
-  });
-}
-
 setupEventListeners();
 setupEditModal();
 setupNewCardPopup();
 enableValidation(validationConfig);
-updateCards();
 
 const profileData = async () => {
   const data = await api.getUserInfo();
@@ -215,3 +207,12 @@ updateProfile(await profileData());
 for (const modal of [bigPictureModal, newCardModal, editProfileModal]) {
   setupModal(modal);
 }
+
+Promise.all([api.getCards(), api.getUserInfo()])
+  .then((res) => {
+    res[0].forEach((card) => {
+      card.userOwner = card.owner['_id'] === res[1]['_id'];
+      places.append(createCard(card, removeCard, likeCard, onPictureClick));
+    });
+  })
+  .catch((err) => console.log(err));
