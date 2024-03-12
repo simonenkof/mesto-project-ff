@@ -129,9 +129,11 @@ export const updateUserAvatar = async (avatarLink) => {
     }),
   })
     .then((res) => {
-      if (!res.ok) {
-        return Promise.reject(`Что-то пошло не так: ${res.status}`);
+      if (res.ok) {
+        return res.json();
       }
+      return Promise.reject(`Что-то пошло не так: ${res.status}`);
     })
+    .then((res) => res)
     .catch((err) => console.log(err));
 };

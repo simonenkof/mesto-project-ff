@@ -25,6 +25,11 @@ const formEditModal = document.forms['edit-profile'];
 const nameInput = formEditModal.elements.name;
 const jobInput = formEditModal.elements.description;
 
+const profileAvatarEditButton = document.querySelector('.profile__image-container');
+const profileAvatarModal = document.querySelector('.popup_type_edit-avatar');
+const profleAvatarForm = document.forms['profile-avatar'];
+const avatarLinkInput = profleAvatarForm.elements.link;
+
 const validationConfig = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
@@ -41,6 +46,7 @@ const validationConfig = {
 function setupEventListeners() {
   newCardButton.addEventListener('click', handleNewCardButtonClick);
   profileEditButton.addEventListener('click', handleEditButtonClick);
+  profileAvatarEditButton.addEventListener('click', handleEditAvatarButtonClick);
 }
 
 /**
@@ -193,9 +199,45 @@ function updateProfile(profileData) {
   }
 }
 
+/**
+ * @function setupEditModalInputs
+ * @description Настраивает слушателей событий модального окна и его элементов.
+ */
+function setupProfileAvatarModal() {
+  profileAvatarModal.addEventListener('submit', handleProfileAvatarEdited);
+}
+
+/**
+ * @function handleAvatarButtonClick
+ * @description Обработчик события "click" кнопки редактирования аватара профиля. Открывает модальное окно
+ * редактирования аватара профиля.
+ */
+function handleEditAvatarButtonClick() {
+  baseModal.openModal(profileAvatarModal);
+}
+
+/**
+ * @function handleProfileAvatarEdited
+ * @description Обработчик события "profileEdited". Изменяет данные профиля.
+ * @param {Event} event - Событие.
+ */
+function handleProfileAvatarEdited(event) {
+  event.preventDefault();
+
+  api
+    .updateUserAvatar(avatarLinkInput.value)
+    .then((res) => res.avatar)
+    .then((avatar) => {
+      pofileAvatar.style.backgroundImage = `url(${avatar})`;
+    });
+
+  baseModal.closeModal(profileAvatarModal);
+}
+
 setupEventListeners();
 setupEditModal();
 setupNewCardPopup();
+setupProfileAvatarModal();
 enableValidation(validationConfig);
 
 const profileData = async () => {
@@ -205,7 +247,7 @@ const profileData = async () => {
 
 updateProfile(await profileData());
 
-for (const modal of [bigPictureModal, newCardModal, editProfileModal]) {
+for (const modal of [bigPictureModal, newCardModal, editProfileModal, profileAvatarModal]) {
   setupModal(modal);
 }
 
