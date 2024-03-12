@@ -2,7 +2,7 @@ import './pages/index.css';
 import * as baseModal from './components/modal';
 import { createCard, removeCard, likeCard } from './components/card';
 import { enableValidation, clearValidation } from './scripts/validation';
-import { getUserInfo, getCards, updateProfileData } from './scripts/api';
+import * as api from './scripts/api';
 
 const places = document.querySelector('.places__list');
 const profileName = document.querySelector('.profile__title');
@@ -107,7 +107,9 @@ function handleAddCard(event) {
     link: newCardLinkInput.value,
   };
 
+  api.createCard(newCardData);
   addCard(newCardData);
+
   baseModal.closeModal(newCardModal);
 }
 
@@ -167,7 +169,7 @@ function handleProfileEdited(event) {
     about: jobInput.value,
   };
 
-  updateProfileData(profileData);
+  api.updateProfileData(profileData);
   updateProfile(profileData);
   baseModal.closeModal(editProfileModal);
 }
@@ -192,7 +194,7 @@ setupNewCardPopup();
 enableValidation(validationConfig);
 
 const profileData = async () => {
-  const data = await getUserInfo();
+  const data = await api.getUserInfo();
   return { name: data.name, about: data.about, avatar: data.avatar };
 };
 
@@ -202,7 +204,7 @@ for (const modal of [bigPictureModal, newCardModal, editProfileModal]) {
   setupModal(modal);
 }
 
-Promise.all([getCards(), getUserInfo()]).then((res) => {
+Promise.all([api.getCards(), api.getUserInfo()]).then((res) => {
   res[0].forEach((card) => {
     places.append(createCard(card, removeCard, likeCard, onPictureClick));
   });

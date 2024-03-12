@@ -48,3 +48,14 @@ export const updateProfileData = async (profileData) => {
     }),
   }).catch((err) => console.log(err));
 };
+
+export const createCard = async (cardData) => {
+  fetch(`${config.baseUrl}/cards`, {
+    method: 'POST',
+    headers: config.headers,
+    body: JSON.stringify({
+      name: cardData.name,
+      link: cardData.link,
+    }),
+  }).catch((err) => console.log(err));
+};
