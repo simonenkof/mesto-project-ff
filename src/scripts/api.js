@@ -59,3 +59,10 @@ export const createCard = async (cardData) => {
     }),
   }).catch((err) => console.log(err));
 };
+
+export const deleteCard = async (cardId) => {
+  fetch(`${config.baseUrl}/cards/${cardId}`, {
+    method: 'DELETE',
+    headers: config.headers,
+  }).catch((err) => console.log(err));
+};

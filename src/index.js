@@ -207,6 +207,7 @@ for (const modal of [bigPictureModal, newCardModal, editProfileModal]) {
 
 Promise.all([api.getCards(), api.getUserInfo()]).then((res) => {
   res[0].forEach((card) => {
+    card.userOwner = card.owner['_id'] === res[1]['_id'];
     places.append(createCard(card, removeCard, likeCard, onPictureClick));
   });
 });

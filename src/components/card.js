@@ -1,3 +1,5 @@
+import { deleteCard } from '../scripts/api';
+
 /**
  * @function createCard
  * @description Создает новую карточку на основе переданных параметров.
@@ -18,8 +20,10 @@ function createCard(cardData, onDeleteCard, onLikeCard, onPicture) {
   cardImage.alt = cardData.description;
   cardLikes.textContent = cardData.likes.length;
 
+  cardDeleteButton.style.display = cardData.userOwner ? 'block' : 'none';
+
   cardImage.addEventListener('click', () => onPicture(cardData));
-  cardDeleteButton.addEventListener('click', (event) => onDeleteCard(event.target.closest('.card')));
+  cardDeleteButton.addEventListener('click', (event) => onDeleteCard(event.target.closest('.card'), cardData['_id']));
   cardLikeButton.addEventListener('click', (event) => onLikeCard(event.target.closest('.card__like-button')));
 
   return card;
@@ -40,7 +44,8 @@ function getCardTemplate() {
  * @description Удаляет карточку, переданную в параметре.
  * @param {Object} cardElement - Карточка.
  */
-function removeCard(cardElement) {
+function removeCard(cardElement, cardId) {
+  deleteCard(cardId);
   cardElement.remove();
 }
 
