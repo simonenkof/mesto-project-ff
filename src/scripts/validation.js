@@ -1,5 +1,3 @@
-const regex = /^(?:[a-zA-Zа-яА-Я\s-]*)$/;
-
 function showInputError(formElement, inputElement, errorMessage, validationConfig) {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.add(validationConfig.inputErrorClass);
@@ -15,7 +13,7 @@ function hideInputError(formElement, inputElement, validationConfig) {
 }
 
 function getValidationMessage(inputElement) {
-  if (regex.test(inputElement.value)) {
+  if (!inputElement.validity.patternMismatch) {
     return inputElement.validationMessage;
   } else {
     return inputElement.dataset.errorMessage;
@@ -23,25 +21,15 @@ function getValidationMessage(inputElement) {
 }
 
 function checkInputValidity(formElement, inputElement, validationConfig) {
-  if (
-    inputElement.id !== 'popup__input_type_url' &&
-    (!inputElement.validity.valid || !regex.test(inputElement.value))
-  ) {
+  if (!inputElement.validity.valid || inputElement.validity.patternMismatch) {
     showInputError(formElement, inputElement, getValidationMessage(inputElement), validationConfig);
   } else {
     hideInputError(formElement, inputElement, validationConfig);
   }
 }
 
-// TODO: не работает валидация
 function hasInvalidInput(inputList) {
-  return inputList.some((inputElement) => {
-    if (inputElement.id === 'popup__input_type_url') {
-      return !inputElement.validity.valid;
-    } else {
-      return !inputElement.validity.valid || !regex.test(inputElement.value);
-    }
-  });
+  return inputList.some((inputElement) => !inputElement.validity.valid || inputElement.validity.patternMismatch);
 }
 
 function toggleButtonState(inputList, buttonElement, inactiveButtonClass) {

@@ -189,7 +189,7 @@ function updateProfile(profileData) {
 setupEventListeners();
 setupEditModal();
 setupNewCardPopup();
-// enableValidation(validationConfig);
+enableValidation(validationConfig);
 
 const profileData = async () => {
   const data = await getUserInfo();
