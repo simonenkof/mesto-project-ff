@@ -105,6 +105,7 @@ function handleAddCard(event) {
   const newCardData = {
     name: newCardNameInput.value,
     link: newCardLinkInput.value,
+    likes: [],
   };
 
   api.createCard(newCardData);
