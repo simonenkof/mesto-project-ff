@@ -46,7 +46,13 @@ export const updateProfileData = async (profileData) => {
       name: profileData.name,
       about: profileData.about,
     }),
-  }).catch((err) => console.log(err));
+  })
+    .then((res) => {
+      if (!res.ok) {
+        return Promise.reject(`Что-то пошло не так: ${res.status}`);
+      }
+    })
+    .catch((err) => console.log(err));
 };
 
 export const createCard = async (cardData) => {
@@ -73,7 +79,13 @@ export const deleteCard = async (cardId) => {
   return fetch(`${config.baseUrl}/cards/${cardId}`, {
     method: 'DELETE',
     headers: config.headers,
-  }).catch((err) => console.log(err));
+  })
+    .then((res) => {
+      if (!res.ok) {
+        return Promise.reject(`Что-то пошло не так: ${res.status}`);
+      }
+    })
+    .catch((err) => console.log(err));
 };
 
 export const likeCard = async (cardId) => {
@@ -105,5 +117,21 @@ export const dislikeCard = async (cardId) => {
       return Promise.reject(`Что-то пошло не так: ${res.status}`);
     })
     .then((res) => res)
+    .catch((err) => console.log(err));
+};
+
+export const updateUserAvatar = async (avatarLink) => {
+  return fetch(`${config.baseUrl}/users/me/avatar `, {
+    method: 'PATCH',
+    headers: config.headers,
+    body: JSON.stringify({
+      avatar: avatarLink,
+    }),
+  })
+    .then((res) => {
+      if (!res.ok) {
+        return Promise.reject(`Что-то пошло не так: ${res.status}`);
+      }
+    })
     .catch((err) => console.log(err));
 };
