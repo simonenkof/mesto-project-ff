@@ -22,6 +22,10 @@ function createCard(cardData, onDeleteCard, onLikeCard, onPicture) {
 
   cardDeleteButton.style.display = cardData.userOwner ? 'block' : 'none';
 
+  if (cardData.liked) {
+    cardLikeButton.classList.add('card__like-button_is-active');
+  }
+
   cardImage.addEventListener('click', () => onPicture(cardData));
   cardDeleteButton.addEventListener('click', (event) => onDeleteCard(event.target.closest('.card'), cardData['_id']));
   cardLikeButton.addEventListener('click', () => onLikeCard(card, cardData['_id']));
@@ -60,6 +64,7 @@ function likeCard(card, cardId) {
 
   if (cardButton.classList.contains('card__like-button_is-active')) {
     cardButton.classList.remove('card__like-button_is-active');
+
     api
       .dislikeCard(cardId)
       .then((res) => res.likes.length)
@@ -68,6 +73,7 @@ function likeCard(card, cardId) {
       });
   } else {
     cardButton.classList.add('card__like-button_is-active');
+
     api
       .likeCard(cardId)
       .then((res) => res.likes.length)

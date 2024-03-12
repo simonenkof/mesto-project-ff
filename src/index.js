@@ -110,6 +110,7 @@ function handleAddCard(event) {
   Promise.all([api.createCard(newCardData), api.getUserInfo()])
     .then((res) => {
       const cardData = res[0];
+      cardData.liked = cardData.likes.some((user) => user['_id'] === res[1]['_id']);
       cardData.userOwner = cardData.owner['_id'] === res[1]['_id'];
       addCard(cardData);
       baseModal.closeModal(newCardModal);
@@ -210,9 +211,10 @@ for (const modal of [bigPictureModal, newCardModal, editProfileModal]) {
 
 Promise.all([api.getCards(), api.getUserInfo()])
   .then((res) => {
-    res[0].forEach((card) => {
-      card.userOwner = card.owner['_id'] === res[1]['_id'];
-      places.append(createCard(card, removeCard, likeCard, onPictureClick));
+    res[0].forEach((cardData) => {
+      cardData.liked = cardData.likes.some((user) => user['_id'] === res[1]['_id']);
+      cardData.userOwner = cardData.owner['_id'] === res[1]['_id'];
+      places.append(createCard(cardData, removeCard, likeCard, onPictureClick));
     });
   })
   .catch((err) => console.log(err));
