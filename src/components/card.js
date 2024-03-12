@@ -1,4 +1,4 @@
-import { deleteCard } from '../scripts/api';
+import * as api from '../scripts/api';
 
 /**
  * @function createCard
@@ -24,7 +24,9 @@ function createCard(cardData, onDeleteCard, onLikeCard, onPicture) {
 
   cardImage.addEventListener('click', () => onPicture(cardData));
   cardDeleteButton.addEventListener('click', (event) => onDeleteCard(event.target.closest('.card'), cardData['_id']));
-  cardLikeButton.addEventListener('click', (event) => onLikeCard(event.target.closest('.card__like-button')));
+  cardLikeButton.addEventListener('click', (event) =>
+    onLikeCard(event.target.closest('.card__like-button'), cardData['_id'])
+  );
 
   return card;
 }
@@ -45,7 +47,7 @@ function getCardTemplate() {
  * @param {Object} cardElement - Карточка.
  */
 function removeCard(cardElement, cardId) {
-  deleteCard(cardId);
+  api.deleteCard(cardId);
   cardElement.remove();
 }
 
@@ -54,8 +56,23 @@ function removeCard(cardElement, cardId) {
  * @description Переключает класс "card__like-button_is-active" на переданной карточке.
  * @param {Object} card - Карточка.
  */
-function likeCard(card) {
-  card.classList.toggle('card__like-button_is-active');
+function likeCard(card, cardId) {
+  const cardElement = getCardTemplate();
+  const cardLikes = cardElement.querySelector('.card__like-count');
+
+  // TODO: не работает обновление кол-ва лайков
+  if (card.classList.contains('card__like-button_is-active')) {
+    card.classList.remove('card__like-button_is-active');
+    api.dislikeCard(cardId);
+  } else {
+    card.classList.add('card__like-button_is-active');
+    api.likeCard(cardId).then((res) => {
+      console.log(cardLikes.textContent);
+      console.log(res.likes.length);
+      cardLikes.textContent = res.likes.length;
+      console.log(cardLikes.textContent);
+    });
+  }
 }
 
 export { createCard, removeCard, likeCard };
