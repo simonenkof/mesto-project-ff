@@ -6,6 +6,13 @@ const config = {
   },
 };
 
+/**
+ * @function getUserInfo
+ * @async
+ * @description Получает информацию о пользователе с сервера.
+ * @returns {Promise<object>} Promise, который возвращается с информацией о пользователе.
+ * @throws {string} Сообщение об ошибке в случае неудачи запроса.
+ */
 export const getUserInfo = async () => {
   return fetch(`${config.baseUrl}/users/me`, {
     method: 'GET',
@@ -22,6 +29,13 @@ export const getUserInfo = async () => {
     .catch((err) => console.log(err));
 };
 
+/**
+ * @function getCards
+ * @async
+ * @description Получает информацию о карточках.
+ * @returns {Promise<object>} Promise, который возвращается с информацией о карточках.
+ * @throws {string} Сообщение об ошибке в случае неудачи запроса.
+ */
 export const getCards = async () => {
   return fetch(`${config.baseUrl}/cards`, {
     method: 'GET',
@@ -38,6 +52,14 @@ export const getCards = async () => {
     .catch((err) => console.log(err));
 };
 
+/**
+ * @function updateProfileData
+ * @async
+ * @description Обновляет данные профиля.
+ * @param {object} profileData - Данные профиля.
+ * @returns {Promise<object>} Promise, который возвращается с информацией о профиле.
+ * @throws {string} Сообщение об ошибке в случае неудачи запроса.
+ */
 export const updateProfileData = async (profileData) => {
   return fetch(`${config.baseUrl}/users/me`, {
     method: 'PATCH',
@@ -58,6 +80,14 @@ export const updateProfileData = async (profileData) => {
     .catch((err) => console.log(err));
 };
 
+/**
+ * @function createCard
+ * @async
+ * @description Создает новую карточку.
+ * @param {object} cardData - Данные карточки.
+ * @returns {Promise<object>} Promise, который возвращается с информацией о созданной карточке.
+ * @throws {string} Сообщение об ошибке в случае неудачи запроса.
+ */
 export const createCard = async (cardData) => {
   return fetch(`${config.baseUrl}/cards`, {
     method: 'POST',
@@ -78,6 +108,13 @@ export const createCard = async (cardData) => {
     .catch((err) => console.log(err));
 };
 
+/**
+ * @function deleteCard
+ * @async
+ * @description Удаляет карточку по id.
+ * @param {string} cardId - id карточки.
+ * @throws {string} Сообщение об ошибке в случае неудачи запроса.
+ */
 export const deleteCard = async (cardId) => {
   return fetch(`${config.baseUrl}/cards/${cardId}`, {
     method: 'DELETE',
@@ -91,6 +128,14 @@ export const deleteCard = async (cardId) => {
     .catch((err) => console.log(err));
 };
 
+/**
+ * @function likeCard
+ * @async
+ * @description Ставит лайк на карточку по id.
+ * @param {string} cardId - id карточки.
+ * @returns {Promise<object>} Promise, который возвращается с информацией о лайкнутой карточке.
+ * @throws {string} Сообщение об ошибке в случае неудачи запроса.
+ */
 export const likeCard = async (cardId) => {
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
     method: 'PUT',
@@ -107,6 +152,14 @@ export const likeCard = async (cardId) => {
     .catch((err) => console.log(err));
 };
 
+/**
+ * @function dislikeCard
+ * @async
+ * @description Убирает лайк с карточки по id.
+ * @param {string} cardId - id карточки.
+ * @returns {Promise<object>} Promise, который возвращается с информацией о дизлайкнутой карточке.
+ * @throws {string} Сообщение об ошибке в случае неудачи запроса.
+ */
 export const dislikeCard = async (cardId) => {
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
     method: 'DELETE',
@@ -123,6 +176,14 @@ export const dislikeCard = async (cardId) => {
     .catch((err) => console.log(err));
 };
 
+/**
+ * @function updateUserAvatar
+ * @async
+ * @description Обновляет аватар пользователя.
+ * @param {string} avatarLink - Ссылка на аватар.
+ * @returns {Promise<object>} Promise, который возвращается с информацией о профиле.
+ * @throws {string} Сообщение об ошибке в случае неудачи запроса.
+ */
 export const updateUserAvatar = async (avatarLink) => {
   return fetch(`${config.baseUrl}/users/me/avatar `, {
     method: 'PATCH',
