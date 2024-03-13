@@ -2,6 +2,7 @@ import './pages/index.css';
 import * as baseModal from './components/modal';
 import { createCard, removeCard, likeCard } from './components/card';
 import { enableValidation, clearValidation } from './scripts/validation';
+import { renderLoading } from './utils/render-loading';
 import * as api from './scripts/api';
 
 const places = document.querySelector('.places__list');
@@ -42,6 +43,8 @@ const validationConfig = {
   errorClass: 'popup__error_visible',
 };
 
+let userId = '';
+
 /**
  * @function setupEventListeners
  * @description Настраивает слушателей событий.
@@ -50,16 +53,6 @@ function setupEventListeners() {
   newCardButton.addEventListener('click', handleNewCardButtonClick);
   profileEditButton.addEventListener('click', handleEditButtonClick);
   profileAvatarEditButton.addEventListener('click', handleEditAvatarButtonClick);
-}
-
-/**
- * @function setupModal
- * @description Настраивает слушателей событий модального окна и его элементов.
- * @param {HTMLDivElement} modal - Модальное окно.
- */
-function setupModal(modal) {
-  const closeButton = modal.querySelector('.popup__close');
-  baseModal.setupModalEventListeners(modal, closeButton);
 }
 
 /**
@@ -84,10 +77,10 @@ function onPictureClick(cardData) {
 }
 
 /**
- * @function setupNewCardPopup
+ * @function setupNewCardFormSubmit
  * @description Настраивает модальное окно добавления новой карточки.
  */
-function setupNewCardPopup() {
+function setupNewCardFormSubmit() {
   newCardForm.addEventListener('submit', handleAddCard);
 }
 
@@ -118,16 +111,15 @@ function handleAddCard(event) {
     link: newCardLinkInput.value,
   };
 
-  Promise.all([api.createCard(newCardData), api.getUserInfo()])
+  api
+    .createCard(newCardData)
     .then((res) => {
-      const cardData = res[0];
-      cardData.liked = cardData.likes.some((user) => user['_id'] === res[1]['_id']);
-      cardData.userOwner = cardData.owner['_id'] === res[1]['_id'];
-      addCard(cardData);
+      res.userOwner = res.owner['_id'] === userId;
+      addCard(res, userId);
+      baseModal.closeModal(newCardModal);
     })
     .catch((err) => console.log(err))
     .finally(() => {
-      baseModal.closeModal(newCardModal);
       renderLoading(saveButtonNewCardModal, false);
     });
 }
@@ -137,15 +129,15 @@ function handleAddCard(event) {
  * @description Обработчик события "cardAdded". Добавляет новую карточку в начало списка.
  * @param {Object} cardData - Информация о карточке.
  */
-function addCard(cardData) {
-  places.prepend(createCard(cardData, removeCard, likeCard, onPictureClick));
+function addCard(cardData, userId) {
+  places.prepend(createCard(cardData, userId, removeCard, likeCard, onPictureClick));
 }
 
 /**
- * @function setupEditModalInputs
+ * @function setupEditProfileFormSubmitInputs
  * @description Настраивает слушателей событий модального окна и его элементов.
  */
-function setupEditModal() {
+function setupEditProfileFormSubmit() {
   formEditModal.addEventListener('submit', handleProfileEdited);
 }
 
@@ -194,10 +186,10 @@ function handleProfileEdited(event) {
     .updateProfileData(profileData)
     .then((res) => {
       updateProfile({ name: res.name, about: res.about });
+      baseModal.closeModal(editProfileModal);
     })
     .catch((err) => console.log(err))
     .finally(() => {
-      baseModal.closeModal(editProfileModal);
       renderLoading(saveButtonEditProfile, false);
     });
 }
@@ -217,10 +209,10 @@ function updateProfile(profileData) {
 }
 
 /**
- * @function setupEditModalInputs
+ * @function setupEditProfileFormSubmitInputs
  * @description Настраивает слушателей событий модального окна и его элементов.
  */
-function setupProfileAvatarModal() {
+function setupProfileAvatarFormSubmit() {
   profileAvatarModal.addEventListener('submit', handleProfileAvatarEdited);
 }
 
@@ -231,6 +223,7 @@ function setupProfileAvatarModal() {
  */
 function handleEditAvatarButtonClick() {
   profleAvatarForm.reset();
+  clearValidation(profleAvatarForm, validationConfig);
   baseModal.openModal(profileAvatarModal);
 }
 
@@ -249,47 +242,31 @@ function handleProfileAvatarEdited(event) {
     .then((res) => res.avatar)
     .then((avatar) => {
       pofileAvatar.style.backgroundImage = `url(${avatar})`;
+      baseModal.closeModal(profileAvatarModal);
     })
     .catch((err) => console.log(err))
     .finally(() => {
       renderLoading(saveButtonAvatarEdit, false);
-      baseModal.closeModal(profileAvatarModal);
     });
 }
 
-/**
- * @function renderLoading
- * @description Управляет отображением загрузки.
- * @param {HTMLButtonElement} button - Кнопка, на которой нужно отобразить загрузку.
- * @param {boolean} state - Флаг загрузки.
- */
-function renderLoading(button, state) {
-  button.textContent = state ? 'Сохранение...' : 'Сохранить';
-}
-
 setupEventListeners();
-setupEditModal();
-setupNewCardPopup();
-setupProfileAvatarModal();
+setupEditProfileFormSubmit();
+setupNewCardFormSubmit();
+setupProfileAvatarFormSubmit();
 enableValidation(validationConfig);
 
-const profileData = async () => {
-  const data = await api.getUserInfo();
-  return { name: data.name, about: data.about, avatar: data.avatar };
-};
-
-updateProfile(await profileData());
-
 for (const modal of [bigPictureModal, newCardModal, editProfileModal, profileAvatarModal]) {
-  setupModal(modal);
+  baseModal.setupModal(modal);
 }
 
 Promise.all([api.getCards(), api.getUserInfo()])
-  .then((res) => {
-    res[0].forEach((cardData) => {
-      cardData.liked = cardData.likes.some((user) => user['_id'] === res[1]['_id']);
-      cardData.userOwner = cardData.owner['_id'] === res[1]['_id'];
-      places.append(createCard(cardData, removeCard, likeCard, onPictureClick));
+  .then(([cards, userData]) => {
+    cards.forEach((cardData) => {
+      updateProfile(userData);
+      userId = userData['_id'];
+      cardData.userOwner = cardData.owner['_id'] === userId;
+      places.append(createCard(cardData, userId, removeCard, likeCard, onPictureClick));
     });
   })
   .catch((err) => console.log(err));

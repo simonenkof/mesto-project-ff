@@ -7,7 +7,7 @@ import * as api from '../scripts/api';
  * @param {Function} onDeleteCard - Колбек для удаления карточки.
  * @return {Object} Созданная карточка
  */
-function createCard(cardData, onDeleteCard, onLikeCard, onPicture) {
+function createCard(cardData, userId, onDeleteCard, onLikeCard, onPicture) {
   const card = getCardTemplate();
   const cardText = card.querySelector('.card__title');
   const cardImage = card.querySelector('.card__image');
@@ -22,7 +22,7 @@ function createCard(cardData, onDeleteCard, onLikeCard, onPicture) {
 
   cardDeleteButton.style.display = cardData.userOwner ? 'block' : 'none';
 
-  if (cardData.liked) {
+  if (cardData.likes.some((user) => user['_id'] === userId)) {
     cardLikeButton.classList.add('card__like-button_is-active');
   }
 
