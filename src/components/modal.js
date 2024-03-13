@@ -5,7 +5,7 @@
  * @param {HTMLButtonElement} closeButton - Кнопка закрытия модального окна.
  */
 function setupModalEventListeners(modal, closeButton) {
-  modal.addEventListener('click', handlePopupClick);
+  modal.addEventListener('mousedown', handlePopupClick);
   closeButton.addEventListener('click', handleCloseButtonClick);
 }
 
@@ -16,7 +16,6 @@ function setupModalEventListeners(modal, closeButton) {
  */
 function openModal(modal) {
   document.addEventListener('keydown', handleEscapeButtonClick);
-  modal.classList.remove('popup_is-animated');
   modal.classList.add('popup_is-opened');
 }
 
@@ -27,7 +26,6 @@ function openModal(modal) {
 function closeModal(modal) {
   document.removeEventListener('keydown', handleEscapeButtonClick);
   modal.classList.remove('popup_is-opened');
-  modal.classList.add('popup_is-animated');
 }
 
 /**
@@ -36,7 +34,7 @@ function closeModal(modal) {
  * @param {Event} event - Событие.
  */
 function handlePopupClick(event) {
-  if (event.target.classList.contains('popup')) closeModal(getOpenedModal());
+  if (event.target.classList.contains('popup')) closeModal(event.target);
 }
 
 /**
