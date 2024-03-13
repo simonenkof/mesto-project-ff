@@ -16,6 +16,7 @@ const config = {
  * @throws {string} Сообщение об ошибке в случае неудачи запроса.
  */
 export const getUserInfo = async () => {
+  request(`${config.baseUrl}/users/me`);
   return fetch(`${config.baseUrl}/users/me`, {
     method: 'GET',
     headers: config.headers,
