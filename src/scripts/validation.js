@@ -92,7 +92,8 @@ function toggleButtonState(inputList, buttonElement, inactiveButtonClass) {
 function setEventListeners(formElement, validationConfig) {
   const inputList = Array.from(formElement.querySelectorAll(validationConfig.inputSelector));
   const buttonElement = formElement.querySelector(validationConfig.submitButtonSelector);
-  toggleButtonState(inputList, buttonElement);
+
+  toggleButtonState(inputList, buttonElement, validationConfig.inactiveButtonClass);
 
   inputList.forEach((inputElement) => {
     inputElement.addEventListener('input', () => {
