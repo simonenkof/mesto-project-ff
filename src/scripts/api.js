@@ -1,3 +1,5 @@
+import { checkResponse } from '../utils/check-response';
+
 const config = {
   baseUrl: 'https://nomoreparties.co/v1/wff-cohort-8',
   headers: {
@@ -18,15 +20,8 @@ export const getUserInfo = async () => {
     method: 'GET',
     headers: config.headers,
   })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      return Promise.reject(`Что-то пошло не так: ${res.status}`);
-    })
-    .then((data) => data)
-    .catch((err) => console.log(err));
+    .then(checkResponse)
+    .then((data) => data);
 };
 
 /**
@@ -41,15 +36,8 @@ export const getCards = async () => {
     method: 'GET',
     headers: config.headers,
   })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      return Promise.reject(`Что-то пошло не так: ${res.status}`);
-    })
-    .then((data) => data)
-    .catch((err) => console.log(err));
+    .then(checkResponse)
+    .then((data) => data);
 };
 
 /**
@@ -69,15 +57,8 @@ export const updateProfileData = async (profileData) => {
       about: profileData.about,
     }),
   })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      return Promise.reject(`Что-то пошло не так: ${res.status}`);
-    })
-    .then((res) => res)
-    .catch((err) => console.log(err));
+    .then(checkResponse)
+    .then((res) => res);
 };
 
 /**
@@ -97,15 +78,8 @@ export const createCard = async (cardData) => {
       link: cardData.link,
     }),
   })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      return Promise.reject(`Что-то пошло не так: ${res.status}`);
-    })
-    .then((res) => res)
-    .catch((err) => console.log(err));
+    .then(checkResponse)
+    .then((res) => res);
 };
 
 /**
@@ -119,13 +93,7 @@ export const deleteCard = async (cardId) => {
   return fetch(`${config.baseUrl}/cards/${cardId}`, {
     method: 'DELETE',
     headers: config.headers,
-  })
-    .then((res) => {
-      if (!res.ok) {
-        return Promise.reject(`Что-то пошло не так: ${res.status}`);
-      }
-    })
-    .catch((err) => console.log(err));
+  }).then(checkResponse);
 };
 
 /**
@@ -141,15 +109,8 @@ export const likeCard = async (cardId) => {
     method: 'PUT',
     headers: config.headers,
   })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      return Promise.reject(`Что-то пошло не так: ${res.status}`);
-    })
-    .then((res) => res)
-    .catch((err) => console.log(err));
+    .then(checkResponse)
+    .then((res) => res);
 };
 
 /**
@@ -165,15 +126,8 @@ export const dislikeCard = async (cardId) => {
     method: 'DELETE',
     headers: config.headers,
   })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      return Promise.reject(`Что-то пошло не так: ${res.status}`);
-    })
-    .then((res) => res)
-    .catch((err) => console.log(err));
+    .then(checkResponse)
+    .then((res) => res);
 };
 
 /**
@@ -192,12 +146,6 @@ export const updateUserAvatar = async (avatarLink) => {
       avatar: avatarLink,
     }),
   })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Что-то пошло не так: ${res.status}`);
-    })
-    .then((res) => res)
-    .catch((err) => console.log(err));
+    .then(checkResponse)
+    .then((res) => res);
 };
