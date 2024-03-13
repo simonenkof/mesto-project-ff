@@ -49,8 +49,10 @@ function getCardTemplate() {
  * @param {Object} cardElement - Карточка.
  */
 function removeCard(cardElement, cardId) {
-  api.deleteCard(cardId);
-  cardElement.remove();
+  api
+    .deleteCard(cardId)
+    .then(() => cardElement.remove())
+    .catch(console.error);
 }
 
 /**
@@ -63,23 +65,23 @@ function likeCard(card, cardId) {
   const cardLikes = card.querySelector('.card__like-count');
 
   if (cardButton.classList.contains('card__like-button_is-active')) {
-    cardButton.classList.remove('card__like-button_is-active');
-
     api
       .dislikeCard(cardId)
       .then((res) => res.likes.length)
       .then((likes) => {
+        cardButton.classList.remove('card__like-button_is-active');
         cardLikes.textContent = likes;
-      });
+      })
+      .catch(console.error);
   } else {
-    cardButton.classList.add('card__like-button_is-active');
-
     api
       .likeCard(cardId)
       .then((res) => res.likes.length)
       .then((likes) => {
+        cardButton.classList.add('card__like-button_is-active');
         cardLikes.textContent = likes;
-      });
+      })
+      .catch(console.error);
   }
 }
 
