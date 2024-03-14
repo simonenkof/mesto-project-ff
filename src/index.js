@@ -26,13 +26,13 @@ const editProfileModal = document.querySelector('.popup_type_edit');
 const formEditModal = document.forms['edit-profile'];
 const nameInput = formEditModal.elements.name;
 const jobInput = formEditModal.elements.description;
-const saveButtonEditProfile = newCardForm.elements['save-button'];
+const saveButtonEditProfile = formEditModal.elements['save-button'];
 
 const profileAvatarEditButton = document.querySelector('.profile__image-container');
 const profileAvatarModal = document.querySelector('.popup_type_edit-avatar');
 const profleAvatarForm = document.forms['profile-avatar'];
 const avatarLinkInput = profleAvatarForm.elements.link;
-const saveButtonAvatarEdit = newCardForm.elements['save-button'];
+const saveButtonAvatarEdit = profleAvatarForm.elements['save-button'];
 
 const validationConfig = {
   formSelector: '.popup__form',
